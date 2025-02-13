@@ -1,0 +1,3 @@
+[submodule "submodules/nim-to-pipelinec"]
+	path = submodules/nim-to-pipelinec
+	url = git@github.com:fl4shk/nim-to-pipelinec.git
