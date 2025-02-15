@@ -193,7 +193,7 @@ macro `doTypedefFixed`*(
     ): `tn` =
       let `ret` = `tn`(fxpt: (
         #`T`(`selfIdent`.fxpt.sqrtI64() shl (`selfIdent`.`fwIdent` shl 1))
-        `T`(`selfIdent`.fxpt.sqrtI64() shl `selfIdent`.`fwIdent`)
+        `T`(sqrtI64(`selfIdent`.fxpt shl `selfIdent`.`fwIdent`))
       ))
       result = `ret`
       

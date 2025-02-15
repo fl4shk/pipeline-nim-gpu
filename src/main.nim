@@ -3,6 +3,7 @@ import array
 import fixedPt
 import vec3
 import vec4
+import miscMath
 import nimToPipelineCSrc/nimToPipelineC
 
 #doTypedefFixed(int32, 8)
@@ -85,11 +86,17 @@ proc `outerOuterMain`*(): int =
   result = outerMain(a=a, b=b)
   #result = 3
 
-echo toPipelineC(
-  s=outerOuterMain,
-  regularC=false,
-  cppConstRefInp=true,
-)
+var temp: FixedI24p8
+temp = temp.setFromInt(2)
+echo sqrtI64(2 shl 16)
+echo temp.sqrt.fxpt
+echo float(temp.sqrt.fxpt) / float(1 shl 8)
+
+#echo toPipelineC(
+#  s=outerOuterMain,
+#  regularC=false,
+#  cppConstRefInp=true,
+#)
 #echo outerOuterMain()
 #echo a.fw
 #echo typeof(a.fw)
