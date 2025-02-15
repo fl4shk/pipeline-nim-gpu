@@ -1,11 +1,17 @@
 import array
+import std/macros
 
 type
   Vec3*[T] = object
     #x*: T
     #y*: T
     #z*: T
-    v: Array(3, T)
+    v*: Array(3, T)
+
+const
+  vec3IdxX = 0
+  vec3IdxY = 1
+  vec3IdxZ = 2
 
 template `[]`(
   self: Vec3,
@@ -22,33 +28,33 @@ template `[]=`(
 
 template `x`*(
   self: Vec3,
-) =
-  self[0]
+): untyped =
+  self[vec3IdxX]
 template `x=`*(
   self: Vec3,
   val: untyped
 ) =
-  self[0] = val
+  self[vec3IdxX] = val
 
 template `y`*(
   self: Vec3,
-) =
-  self[1]
+): untyped =
+  self[vec3IdxY]
 template `y=`*(
   self: Vec3,
   val: untyped
 ) =
-  self[1] = val
+  self[vec3IdxY] = val
 
 template `z`*(
   self: Vec3,
-) =
-  self[2]
+): untyped =
+  self[vec3IdxZ]
 template `z=`*(
   self: Vec3,
   val: untyped
 ) =
-  self[2] = val
+  self[vec3IdxZ] = val
 
 
 proc `plus`*[T](
@@ -76,6 +82,17 @@ template `-`*(
   right: Vec3,
 ): Vec3 =
   left.minus right
+
+proc `negate`*[T](
+  self: Vec3[T],
+): Vec3[T] =
+  for i in 0 ..< result.v.len():
+    result[i] = -left[i]
+
+template `-`*(
+  self: Vec3,
+): Vec3 =
+  self.negate
 
 proc `star`*[T](
   left: Vec3[T],
@@ -105,21 +122,24 @@ template `/`*(
   left.slash right
 
 
-proc `dot`*[T](
+#proc `dot`*[T](
+#  #someRet: T,
+#  left: Vec3[T],
+#  right: Vec3[T],
+#): T = 
+#  #result = T(0)
+#  #result = quote do:
+#  #result = fromInt(0)
+#  #result = 0
+#  result = result.fromInt(0)
+#  for i in 0 ..< left.v.len():
+#    result = result + (left.v[i] * right.v[i])
+#  #`someRet`
+
+proc `cross`*[T](
   left: Vec3[T],
   right: Vec3[T],
-): T = 
-  result = T(0)
-  for i in 0 .. result.v.len():
-    result = result + (left.v[i] * right.v[i])
-  #T(
-  #  (
-  #    left.x * right.x
-  #  ) + (
-  #    left.y * right.y 
-  #  ) + (
-  #    left.z * right.z
-  #  )
-  #)
-
-
+): Vec3[T] =
+  result.x = (left.y * right.z) - (left.z * right.y)
+  result.y = (left.z * right.x) - (left.x * right.z)
+  result.z = (left.x * right.y) - (left.y * right.x)
