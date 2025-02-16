@@ -1,5 +1,6 @@
 import array
 import vec3
+import miscMath
 
 type
   Vec4*[T] = object
@@ -143,6 +144,25 @@ proc `dot`*[T](
   for i in 0 ..< left.v.len():
     result = result + (left.v[i] * right.v[i])
   #someRet
+
+#proc `mag`*[T](
+#  self: Vec4[T]
+#): T = 
+#  return sqrt(self.dot(self))
+#
+#proc `norm`*[T](
+#  self: Vec4[T]
+#): T =
+#  return self / self.mag()
+template `mag`*(
+  self: Vec4
+): untyped = 
+  self.dot(self).sqrt()
+
+template `norm`*(
+  self: Vec4
+): untyped =
+  self / self.mag()
 
 #proc `cross`*[T](
 #  left: Vec4[T],

@@ -135,6 +135,17 @@ template `/`*(
 #  for i in 0 ..< left.v.len():
 #    result = result + (left.v[i] * right.v[i])
 #  #`someRet`
+proc `dot`*[T](
+  #self: untyped,
+  left: Vec3[T],
+  right: Vec3[T],
+): T = 
+  #result.fxpt = 0
+  #result.setFromInt(1)
+  result = result.setFromInt(int32(0))
+  for i in 0 ..< left.v.len():
+    result = result + (left.v[i] * right.v[i])
+  #someRet
 
 proc `cross`*[T](
   left: Vec3[T],
@@ -143,3 +154,13 @@ proc `cross`*[T](
   result.x = (left.y * right.z) - (left.z * right.y)
   result.y = (left.z * right.x) - (left.x * right.z)
   result.z = (left.x * right.y) - (left.y * right.x)
+
+template `mag`*(
+  self: Vec3
+): untyped = 
+  self.dot(self).sqrt()
+
+template `norm`*(
+  self: Vec3
+): untyped =
+  self / self.mag()

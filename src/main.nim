@@ -3,6 +3,7 @@ import array
 import fixedPt
 import vec3
 import vec4
+import mat3x3
 import miscMath
 import nimToPipelineCSrc/nimToPipelineC
 
@@ -36,9 +37,9 @@ proc `myMain`*(
   #result = dot[FixedI24p8](a, b)
   #result = a + b
   #result = a.dot b
-  var temp: FixedI24p8
+  #var temp: FixedI24p8
   #result = a.x * (temp.setFromInt(1) / b.x.sqrt)
-  let ret = (a.dot b) / (temp.setFromInt(1) / b.x.sqrt())
+  let ret = (a.dot b) / (mkFixedI24p8(1) / b.x.sqrt())
   result = ret
   #result = (temp.setFromInt(1) / b.x.sqrt())
   #result = b.x.sqrt()
@@ -87,8 +88,8 @@ proc `outerOuterMain`*(): int =
   #result = 3
 
 var temp: FixedI24p8
-temp = temp.setFromInt(2)
-echo sqrtI64(2 shl 16)
+temp = temp.setFromInt(200)
+#echo sqrtI64(2 shl 16)
 echo temp.sqrt.fxpt
 echo float(temp.sqrt.fxpt) / float(1 shl 8)
 

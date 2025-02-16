@@ -1,5 +1,6 @@
 import std/macros
 import miscMath
+import nimToPipelineCSrc/nimToPipelineC
 
 #type
 #  FracWidth* = object
@@ -70,24 +71,30 @@ macro `doTypedefFixed`*(
   let myT = ident($T)
   let tn = ident(doTypedefFixedHelper(T, FracWidth))
   let setFromIntIdent = ident("setFromInt")
-  #let buildFromIntIdent = ident("build" & tn.strVal & "FromInt")
+  let mkFromIntIdent = ident("mk" & tn.strVal)
+  #let mkFromIntIdent = ident(
+  #  tn.strVal
+  #)
   let fwIdent = ident("fw")
   let leftIdent = ident("left")
   let rightIdent = ident("right")
   let selfIdent = ident("self")
   let valIdent = ident("val")
-  let plusIdent = ident("plus")
+  let plusIdent = ident("plus" & tn.strVal)
   let plusOpIdent = ident("+")
-  let minusIdent = ident("minus")
+  let minusIdent = ident("minus" & tn.strVal)
   let minusOpIdent = ident("-")
-  let negateIdent = ident("negate")
+  let negateIdent = ident("negate" & tn.strVal)
   let negateOpIdent = ident("-")
-  let starIdent = ident("star")
+  let starIdent = ident("star" & tn.strVal)
   let starOpIdent = ident("*")
-  let slashIdent = ident("slash")
+  let slashIdent = ident("slash" & tn.strVal)
   let slashOpIdent = ident("/")
-  let sqrtIdent = ident("sqrt")
+  let sqrtIdent = ident("sqrt" & tn.strVal)
+  let sqrtTmplIdent = ident("sqrt")
+  #let sqrtI32Ident = ident("sqrtI32" & tn.strVal)
   let ret = ident("ret")
+  #let testRet = ident("testRet")
   let intTIdent = ident("IntT")
   #let fwVal = newLit(`Fw`)
   result = quote do:
@@ -103,8 +110,14 @@ macro `doTypedefFixed`*(
       `valIdent`: `intTIdent`,
     ): `tn` =
       result.fxpt = `myT`(`valIdent`) shl `myT`(`selfIdent`.`fwIdent`)
+    proc `mkFromIntIdent`*[`intTIdent`](
+      `valIdent`: `intTIdent`,
+    ): `tn` =
+      var `ret`: `tn`
+      `ret` = `ret`.`setFromIntIdent`(`valIdent`)
+      result = `ret`
 
-    #template `buildFromIntIdent`*(
+    #template `mkFromIntIdent`*(
     #  `selfIdent`: 
     #  `valIdent`: int
     #): `tn` =
@@ -114,28 +127,28 @@ macro `doTypedefFixed`*(
     proc `plusIdent`*(
       `leftIdent`: `tn`,
       `rightIdent`: `tn`,
-    ): `tn` =
+    ): `tn` {.cnomangle.} =
       let `ret` = `tn`(fxpt: `leftIdent`.fxpt + `rightIdent`.fxpt)
       result = `ret`
     template `plusOpIdent`*(
       `leftIdent`: `tn`,
       `rightIdent`: `tn`,
     ): untyped = 
-      `leftIdent`.plus `rightIdent`
+      `leftIdent`.`plusIdent` `rightIdent`
     proc `minusIdent`*(
       `leftIdent`: `tn`,
       `rightIdent`: `tn`,
-    ): `tn` =
+    ): `tn` {.cnomangle.} =
       let `ret` = `tn`(fxpt: `leftIdent`.fxpt - `rightIdent`.fxpt)
       result = `ret`
     template `minusOpIdent`*(
       `leftIdent`: `tn`,
       `rightIdent`: `tn`,
     ): untyped = 
-      `leftIdent`.minus `rightIdent`
+      `leftIdent`.`minusIdent` `rightIdent`
     proc `negateIdent`*(
       `selfIdent`: `tn`,
-    ): `tn` =
+    ): `tn` {.cnomangle.} =
       let `ret` = `tn`(fxpt: -`selfIdent`.fxpt)
       result = `ret`
     template `negateOpIdent`*(
@@ -145,7 +158,7 @@ macro `doTypedefFixed`*(
     proc `starIdent`*(
       `leftIdent`: `tn`,
       `rightIdent`: `tn`,
-    ): `tn` =
+    ): `tn` {.cnomangle.} =
       let `ret` = `tn`(
         fxpt: (
           `T`(
@@ -162,11 +175,11 @@ macro `doTypedefFixed`*(
       `leftIdent`: `tn`,
       `rightIdent`: `tn`,
     ): untyped = 
-      `leftIdent`.star `rightIdent`
+      `leftIdent`.`starIdent` `rightIdent`
     proc `slashIdent`*(
       `leftIdent`: `tn`,
       `rightIdent`: `tn`,
-    ): `tn` =
+    ): `tn` {.cnomangle.} =
       let `ret` = `tn`(fxpt: (
           #(
           #  `leftIdent`.fxpt * `rightIdent`.fxpt
@@ -185,23 +198,47 @@ macro `doTypedefFixed`*(
       `leftIdent`: `tn`,
       `rightIdent`: `tn`,
     ): untyped = 
-      `leftIdent`.slash `rightIdent`
+      `leftIdent`.`slashIdent` `rightIdent`
     # algorithm borrowed from
     # https://github.com/chmike/fpsqrt/blob/master/fpsqrt.c#L69
     proc `sqrtIdent`*(
-      `selfIdent`: `tn`
-    ): `tn` =
+      `selfIdent`: `tn`,
+    ): `tn` {.cnomangle.} =
       let `ret` = `tn`(fxpt: (
         #`T`(`selfIdent`.fxpt.sqrtI64() shl (`selfIdent`.`fwIdent` shl 1))
-        `T`(sqrtI64(`selfIdent`.fxpt shl `selfIdent`.`fwIdent`))
+        `T`(sqrtI64(int64(`selfIdent`.fxpt) shl `selfIdent`.`fwIdent`))
       ))
       result = `ret`
+    template `sqrtTmplIdent`*(
+      `selfIdent`: `tn`,
+    ): `tn` =
+      `selfIdent`.`sqrtIdent`()
+    #proc `sqrtIdent`*(
+    #  `selfIdent`: `tn`,
+    #  `testRet`: `tn`,
+    #): `tn` {.cnomangle.} =
+    #  let `ret` = `tn`(fxpt: (
+    #    #`T`(`selfIdent`.fxpt.sqrtI64() shl (`selfIdent`.`fwIdent` shl 1))
+    #    `T`(sqrtI64(int32(`selfIdent`.fxpt) shl `selfIdent`.`fwIdent`))
+    #  ))
+    #  result = `ret`
       
 
 doTypedefFixed(int64, 32)
 doTypedefFixed(int64, 16)
 doTypedefFixed(int32, 8)
 doTypedefFixed(int16, 4)
+
+#type
+#  MyFixed* = FixedI24p8
+macro `MyFixed`*(): untyped =
+  result = quote do:
+    FixedI24p8
+
+template `mkMyFixed`*[IntT](
+  val: IntT
+): MyFixed =
+  mkFixedI24p8(val)
 
   #let tn = ident(FixedTypeName(T, Fw))
   #let tn = ident("Fixed" & $T
