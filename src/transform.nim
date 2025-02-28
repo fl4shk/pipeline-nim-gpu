@@ -24,7 +24,7 @@ proc `defaultFov`*(): MyFixed =
   return ret
 
 
-proc `doProject`(
+proc `doProject`*(
   self: Mat4x4[MyFixed],
   model: Mat4x4[MyFixed],
   view: Mat4x4[MyFixed],
@@ -36,21 +36,21 @@ proc `doProject`(
   return perspV
 
 
-proc `testDoProjectPipelineC`(): Vec4[MyFixed]  =
-  var self: Mat4x4[MyFixed]
-  var model: Mat4x4[MyFixed]
-  var view: Mat4x4[MyFixed]
-  var v: Vec4[MyFixed]
-  let ret = self.doProject(
-    model=model,
-    view=view,
-    v=v,
-  )
-  result = ret
+#proc `testDoProjectPipelineC`(): Vec4[MyFixed]  =
+#  var self: Mat4x4[MyFixed]
+#  var model: Mat4x4[MyFixed]
+#  var view: Mat4x4[MyFixed]
+#  var v: Vec4[MyFixed]
+#  let ret = self.doProject(
+#    model=model,
+#    view=view,
+#    v=v,
+#  )
+#  result = ret
 
-let a: string = toPipelineC(
-  s=testDoProjectPipelineC,
-  regularC=false,
-  cppConstRefInp=true,
-)
-echo a
+#let a: string = toPipelineC(
+#  s=testDoProjectPipelineC,
+#  regularC=false,
+#  cppConstRefInp=true,
+#)
+#echo a

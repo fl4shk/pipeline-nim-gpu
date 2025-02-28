@@ -5,6 +5,7 @@ import vec3
 import vec4
 import mat3x3
 import miscMath
+import part
 import nimToPipelineCSrc/nimToPipelineC
 
 #doTypedefFixed(int32, 8)
@@ -22,14 +23,14 @@ import nimToPipelineCSrc/nimToPipelineC
 #) =
 #  self = x
 
-macro part(): untyped =
-  result = quote do:
-    "#pragma PART \"xc7a100tcsg324-1\"\n" 
+#macro part(): untyped =
+#  result = quote do:
+#    "#pragma PART \"xc7a100tcsg324-1\"\n" 
 
 proc `myMain`*(
   a: Vec4[FixedI24p8],
   b: Vec4[FixedI24p8],
-): FixedI24p8 {.cnomangle,craw: part,cmainmhz: "100.0".} =
+): FixedI24p8 {.cnomangle,craw: part(),cmainmhz: "100.0".} =
   #result = a.cross b
   #result.dot(a, b)
   #result.Fw

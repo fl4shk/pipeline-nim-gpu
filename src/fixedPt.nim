@@ -228,12 +228,17 @@ doTypedefFixed(int64, 32)
 doTypedefFixed(int64, 16)
 doTypedefFixed(int32, 8)
 doTypedefFixed(int16, 4)
+doTypedefFixed(int16, 12)
 
 #type
 #  MyFixed* = FixedI24p8
 macro `MyFixed`*(): untyped =
   result = quote do:
     FixedI24p8
+
+macro `MyFixedUv`*(): untyped =
+  result = quote do:
+    FixedI4p12
 
 template `mkMyFixed`*[IntT](
   val: IntT
