@@ -5,6 +5,7 @@ import std/math
 import miscMath
 import mode
 import std/sets
+import std/options
 
 type 
   Triple*[T] = object
@@ -104,6 +105,26 @@ type
     cidxBottom,
     cidxTop,
     cidxLim,
+proc revCubeIdx(
+  cidx: CubeIdx
+): CubeIdx =
+  result = cidxLim
+  case cidx:
+  of cidxFront:
+    result = cidxBack
+  of cidxBack:
+    result = cidxFront
+  of cidxLeft:
+    result = cidxRight
+  of cidxRight:
+    result = cidxLeft
+  of cidxBottom:
+    result = cidxTop
+  of cidxTop:
+    result = cidxBottom
+  else:
+    doAssert(false)
+  
 type
   ReducedCubeIdx* = enum
     rcidxFront,
@@ -137,14 +158,23 @@ type
 type
   CubeUnit* = object
     vArr*: array[quadVertArrLen, Triple[int32]]
-    rcidx*: ReducedCubeIdx
-    cidx*: CubeIdx
+    rcidx*: Option[ReducedCubeIdx]
+    cidx*: Option[CubeIdx]
     n*: array[quadVertArrLen, Triple[int32]] # normalized
     fIdx*: int
+var vnConvArr: array[rcidxLim, array[2, uint]]
 
-proc isAdj*(
-  left: CubeUnit,
-  right: CubeUnit,
+proc isAdjSide*(
+  left: ptr CubeUnit,
+  right: ptr CubeUnit,
+): bool =
+  let vLeftSet = toHashSet(left.vArr)
+  let vRightSet = toHashSet(right.vArr)
+  result = (vLeftSet == vRightSet)
+
+proc hasSharedVertPair*(
+  left: ptr CubeUnit,
+  right: ptr CubeUnit,
 ): bool = 
   result = false
   for j in 0 ..< left.vArr.len():
@@ -266,9 +296,18 @@ const
 #  inp: Cube
 #): Cube = 
 type
+  CubeDataInfo* = object
+    unitIdx*: uint
+    cidx*: Option[CubeIdx]
+
+type
   CubeData* = object
     c*: Cube
     cUnitIdxSeq*: seq[uint]
+    cInfoArr*: array[cidxLim, CubeDataInfo]
+#type
+#  CubeDataOpt* = object
+#    cData*: CubeData
 
 #type
 #  CubeSideIdx* = enum
@@ -282,12 +321,8 @@ type
 #    #cOrder*: ptr proc(cData: CubeData, cidx: CubeIdx)
 #    cOrder*: CubeOrder 
 
-type
-  CubeIdxInfo* = object
-    unitIdx*: uint
-    cidx*: CubeIdx
 
-proc toCubeIdxInfoTbl(
+proc toCubeDataInfoArr(
   #cube: Cube,
   #cData: CubeData,
   #c: Cube,
@@ -297,7 +332,7 @@ proc toCubeIdxInfoTbl(
   cUnitSeq: ptr seq[CubeUnit],
   cData: ptr CubeData,
   #cUnit: CubeUnit,
-): Table[CubeIdx, CubeIdxInfo] =
+): array[cidxLim, CubeDataInfo] =
   #var vSet: HashSet[Triple[int32]]
   #for v in vArr:
   #  vSet.incl(v - vArr[0])
@@ -308,12 +343,16 @@ proc toCubeIdxInfoTbl(
   #  let unit: ptr CubeUnit = addr cUnitSeq[][cData.cUnitIdxSeq[j]]
   var myRciTbl: Table[
     #ReducedCubeIdx, seq[(uint, bool)]
-    ReducedCubeIdx, seq[CubeIdxInfo]
+    ReducedCubeIdx, seq[CubeDataInfo]
   ]
   for unitIdx in cData.cUnitIdxSeq:
     let unit: ptr CubeUnit = addr cUnitSeq[unitIdx]
+    #echo "unit[]: " & $unit[]
     var myInpCidx: CubeIdx
-    case unit.rcidx:
+    doAssert(
+      unit.rcidx.isSome
+    )
+    case unit.rcidx.get():
     of rcidxFront:
       myInpCidx = cidxFront
     of rcidxLeft:
@@ -323,13 +362,13 @@ proc toCubeIdxInfoTbl(
     else:
       doAssert(false)
 
-    if unit.rcidx notin myRciTbl:
-      myRciTbl[unit.rcidx] = @[CubeIdxInfo(
+    if unit.rcidx.get() notin myRciTbl:
+      myRciTbl[unit.rcidx.get()] = @[CubeDataInfo(
         unitIdx: unitIdx,
-        cidx: myInpCidx,
+        cidx: some(myInpCidx),
       )]
     else:
-      let mySeq = addr myRciTbl[unit.rcidx]
+      let mySeq = addr myRciTbl[unit.rcidx.get()]
       if mySeq[].len() == 1:
       #for i in 0 ..< mySeq[].len():
         let info = mySeq[0]
@@ -347,13 +386,22 @@ proc toCubeIdxInfoTbl(
             not vSub[0].v.contains(-1)
           )
         ):
+          #var s: string
+          #s.add "continuing: \n"
+          #s.add $unit.vArr & " \n"
+          #s.add "- " & $otherUnit.vArr & " \n"
+          #s.add "  ->" & $vSub & "\n"
+          #s.add "1:" & $vSub[0].v.contains(1)
+          #s.add "  "
+          #s.add "-1:" & $vSub[0].v.contains(-1)
+          #echo s
           continue
 
         if vSub[0].v.contains(-1): # they should all be identical
           haveNeg = true
         var myCidx: array[2, CubeIdx]
 
-        case unit.rcidx:
+        case unit.rcidx.get():
         of rcidxFront:
           myCidx = [cidxFront, cidxBack]
         of rcidxLeft:
@@ -362,9 +410,9 @@ proc toCubeIdxInfoTbl(
           myCidx = [cidxBottom, cidxTop]
         else:
           doAssert(false)
-        var toAdd = CubeIdxInfo(
+        var toAdd = CubeDataInfo(
           unitIdx: unitIdx,
-          cidx: myCidx[1],
+          cidx: some(myCidx[1]),
         )
         mySeq[].add(
           toAdd
@@ -399,8 +447,22 @@ proc toCubeIdxInfoTbl(
         #s.add "  -> " & $vSub & "\n"
         #echo s
   for k, v in myRciTbl:
+    #echo k
     for item in v:
-      result[item.cidx] = item
+      #echo item
+      #doAssert(
+      #  item.cidx.isSome
+      #)
+      if item.cidx.isSome:
+        result[item.cidx.get()] = item
+    #echo "--"
+  #for cidx in CubeIdx(0) ..< cidxLim:
+  #  if not result[cidx].cidx.isSome:
+  #    echo cidx
+  #    echo result
+  #  doAssert(
+  #    result[cidx].cidx.isSome
+  #  )
 
   #echo "----"
 
@@ -435,6 +497,10 @@ proc toCubeIdxInfoTbl(
 #    cfkUnknown,
 #    cfkZero,
 #    cfkOne,
+type
+  RectData = object
+    rSeq*: seq[array[quadVertArrLen, Triple[int32]]] # rect `seq`
+    rIdxTbl*: Table[Triple[int32], seq[uint]] # vert to `rSeq` index
 
 type
   ObjConvert* = object
@@ -465,20 +531,14 @@ type
     #cfPairTbl*: Table[uint, array[2, uint]]
 
     cUnitSeq*: seq[CubeUnit]
-    vUnitTbl*: Table[Triple[int32], seq[uint]]
+    vUnitInpTbl*: Table[Triple[int32], seq[uint]]
+    vUnitOptTbl*: Table[Triple[int32], seq[uint]]
 
-    ## `cfTbl` maps from each quad's `CubeUnit` to a (potential) pair of
-    ## `Cube`s
-    #cfTbl*: Table[uint, array[2, uint]]
-    #cfTbl*: Table[Triple[int32], array[rcidxLim, (bool, uint)]]
-    #cvTbl*: Table[Triple[int32], seq[uint]]
-    #cNormTbl*: Table[array[cidxLim, uint], seq[uint]]
-    #cvTbl*: Table[uint, seq[uint]]
-    #hqSeq*: seq[array[2, uint]] # half-quad `seq`
-    #cPartSeq*: seq[Cube]
     cDataIdxTbl*: Table[HashSet[Triple[int32]], uint]
     cDataInpSeq*: seq[CubeData] #seq[(Cube, seq[uint])]
-    cDataOptSeq*: seq[CubeData]
+    #cDataOptArrSeq*: seq[array[cidxLim, seq[uint]]]
+    cDataOptS2d*: seq[seq[CubeData]]
+    cDataAdjS2d*: seq[seq[array[cidxLim, seq[uint]]]]
     outp*: string
     #isTri*: bool
     mode*: Mode
@@ -512,7 +572,7 @@ proc maybeTrisToQuads(
     )
   )
   if haveAllQuads:
-    self.fQuadSeq = move(self.fInpSeq)
+    self.fQuadSeq = self.fInpSeq
     self.fInpSeq.setLen(0)
     return
 
@@ -740,6 +800,7 @@ proc quadsSort(
   self.fOptSeq.setLen(0)
 
 proc mkCubeUnit(
+  self: var ObjConvert,
   vSeq: var seq[Triple[int32]],
   fSeq: seq[Triple[uint]],
   fIdx: int,
@@ -767,7 +828,7 @@ proc mkCubeUnit(
           myFoundRci = false
       if myFoundRci:
         foundRci = true
-        unit.rcidx = rcidxFront
+        unit.rcidx = some(rcidxFront)
     of rcidxLeft:
       var myFoundRci: bool = true
       for i in 0 ..< unit.n.len():
@@ -779,7 +840,7 @@ proc mkCubeUnit(
         )
       elif myFoundRci:
         foundRci = true
-        unit.rcidx = rcidxLeft
+        unit.rcidx = some(rcidxLeft)
     of rcidxBottom:
       var myFoundRci: bool = true
       for i in 0 ..< unit.n.len():
@@ -791,14 +852,46 @@ proc mkCubeUnit(
         )
       elif myFoundRci:
         foundRci = true
-        unit.rcidx = rcidxBottom
+        unit.rcidx = some(rcidxBottom)
     else:
-      doAssert(
-        false
-      )
-  doAssert(
-    foundRci
-  )
+      doAssert(false)
+  doAssert(foundRci)
+
+  #case unit.rcidx.get():
+  #of rcidxFront:
+  #  vnConvArr[unit.rcidx.get()][0] = (
+  #    
+  #  )
+  #of rcidxLeft:
+  #  discard
+  #of rcidxBottom:
+  #  discard
+  #else:
+  #  doAssert(false)
+  let vnIdx = fSeq[0].v[uint(fidxVn)]
+  let vn = self.vnInpSeq[vnIdx - 1]
+  var foundVn: bool = false
+  for i in 0 ..< vn.len():
+    if round(vn[i]) == 1:
+      doAssert(not foundVn)
+      foundVn = true
+      vnConvArr[unit.rcidx.get()][0] = vnIdx
+    elif round(vn[i]) == -1:
+      doAssert(not foundVn)
+      foundVn = true
+      vnConvArr[unit.rcidx.get()][1] = vnIdx
+    elif round(vn[i]) == 0:
+      #foundVn = true
+      discard
+    else:
+      doAssert(false)
+  #if vn.contains(1.0):
+  #  discard
+  #elif vn.contains(-1.0):
+  #  discard
+  #else:
+  #  doAssert(false)
+  doAssert(foundVn)
   result = unit
 
 proc cubeVertSort(
@@ -838,7 +931,7 @@ proc quadsToCubes(
 
   for j in 0 ..< self.fSortSeq.len():
     let fSeq = self.fSortSeq[j]
-    let unit = mkCubeUnit(
+    let unit = self.mkCubeUnit(
       vSeq=self.vOptSeq,
       fSeq=fSeq,
       fIdx=j,
@@ -846,12 +939,12 @@ proc quadsToCubes(
     #if unit.rcidx == rcidxFront:
     for i in 0 ..< unit.vArr.len():
       let v = unit.vArr[i]
-      if v notin self.vUnitTbl:
-        self.vUnitTbl[v] = @[]
+      if v notin self.vUnitInpTbl:
+        self.vUnitInpTbl[v] = @[]
       doAssert(
-        uint(self.cUnitSeq.len()).notin self.vUnitTbl[v]
+        uint(self.cUnitSeq.len()).notin self.vUnitInpTbl[v]
       )
-      self.vUnitTbl[v].add uint(self.cUnitSeq.len())
+      self.vUnitInpTbl[v].add uint(self.cUnitSeq.len())
     self.cUnitSeq.add unit
   #for k, v in self.vNormTbl:
   #  echo $k & ": " & $v
@@ -859,6 +952,7 @@ proc quadsToCubes(
   #var cvTbl: Table[]
 
   #var cDataIdxTbl: Table[HashSet[Triple[int32]], uint]
+  #echo self.cUnitSeq.len()
   for j in 0 ..< self.cUnitSeq.len():
     let unit = self.cUnitSeq[j]
     #if unit.rcidx == rcidxFront:
@@ -873,7 +967,10 @@ proc quadsToCubes(
         vOffsArr[k][i].v[0] = v.v[0]
         vOffsArr[k][i].v[1] = v.v[1]
         vOffsArr[k][i].v[2] = v.v[2]
-      case unit.rcidx:
+      doAssert(
+        unit.rcidx.isSome
+      )
+      case unit.rcidx.get():
       of rcidxFront:
         vOffsArr[0][i].v[2] += 1
         vOffsArr[1][i].v[2] -= 1
@@ -900,7 +997,7 @@ proc quadsToCubes(
 
       for k in 0 ..< tempLen:
         #var s: string
-        if vOffsArr[k][i].notin self.vUnitTbl:
+        if vOffsArr[k][i].notin self.vUnitInpTbl:
           found[k] = false
         #s.add "k:" & $k & " i:" & $i & "; " & $vOffsArr[k][i] & "; "
         #s.add $found[k]
@@ -978,26 +1075,317 @@ proc quadsToCubes(
 proc cubesOptFirst(
   self: var ObjConvert
 ) =
+  var toAddSeq: seq[CubeData]
+  self.cDataOptS2d.add toAddSeq
+
+  #var toAddArr: array[cidxLim, seq[(uint, uint)]]
+
+  #echo self.cDataInpSeq.len()
   for j in 0 ..< self.cDataInpSeq.len():
     let cData = addr self.cDataInpSeq[j]
 
     #var myCiTbl: Table[CubeIdx, seq[(uint, CubeFaceKind)]]
-    let cIdxInfoTbl = toCubeIdxInfoTbl(
+    #var mySet: HashSet[CubeIdx]
+    let cInfoArr = toCubeDataInfoArr(
       cUnitSeq=addr self.cUnitSeq,
       cData=cData,
     )
+    var doIt: bool = true
+    for cidx in CubeIdx(0) ..< cidxLim:
+      if not cInfoArr[cidx].cidx.isSome:
+        doIt = false
+    #if mySet.len() == int(cidxLim):
+    if doIt:
+      var toAdd = CubeData(
+        c: cData.c,
+        cInfoArr: cInfoArr,
+      )
+      #for cInfo in toAdd.cInfoArr:
+      #  toAddArr[cInfo.cidx].add (uint(j), cInfo.unitIdx)
 
-    var toAdd = CubeData(
-      c: cData.c
-    )
-    self.cDataOptSeq.add toAdd
+      self.cDataOptS2d[0].add toAdd
+  #for j in 0 ..< self.cDataOptS2d[0].len():
+  #  let cData = addr self.cDataOptS2d[0][j]
+  #  for cInfo in cData.cInfoArr:
+  #    toAddArr[cInfo.cidx].add uint(j) #cInfo.unitIdx
+
+  #for j in 0 ..< self.cDataOptS2d[0].len():
+  #  let cData = addr self.cDataInpSeq[j]
+  #  #for cidx in CubeIdx(0) ..< cidxLim:
+  #  #  toAddArr[cidx].add 
+  #self.cDataOptArrSeq.add toAddArr
 
   self.cDataInpSeq.setLen(0)
+
+proc findAdjCubes(
+  self: var ObjConvert,
+  optPrevSeqIdx: Option[int]=none(int),
+): seq[array[cidxLim, seq[uint]]] =
+  var tempPrevSeqIdx: int = 0
+  if optPrevSeqIdx.isSome:
+    tempPrevSeqIdx = optPrevSeqIdx.get()
+  else:
+    tempPrevSeqIdx = self.cDataOptS2d.len() - 1
+  let prevSeq = addr self.cDataOptS2d[tempPrevSeqIdx]
+
+  #proc innerFunc(
+  #  self: var ObjConvert,
+  #  cData0: var CubeData,
+  #  cData1: var CubeData,
+  #) =
+  #  #let currSeq = addr self.cDataOptS2d[^1]
+  #  #let a = addr currSeq
+  #  for cInfo0 in cData0.cInfoArr:
+  #    let cInfo1 = addr cData1.cInfoArr[revCubeIdx(cInfo0.cidx)]
+  #    let cUnit0 = addr self.cUnitSeq[cInfo0.unitIdx]
+  #    let cUnit1 = addr self.cUnitSeq[cInfo1.unitIdx]
+  var myTbl: Table[Triple[int32], seq[uint]]
+  for j in 0 ..< prevSeq[].len():
+    let cData = addr prevSeq[j]
+    for c in cData.c.c:
+      if c notin myTbl:
+        var toAddSeq: seq[uint]
+        myTbl[c] = toAddSeq
+
+      for i in myTbl[c]:
+        let cData1 = addr prevSeq[i]
+        let vLeftSet = toHashSet(cData.c.c)
+        let vRightSet = toHashSet(cData1.c.c)
+        #var cond: bool = true
+        #for c0 in cData.c.c:
+        #  var found: bool = false
+        #  for c1 in cData1.c.c:
+        #    if c0 == c1:
+        #      found = true
+        #  if not found:
+        #    cond = false
+        #if not cond:
+        if vLeftSet == vRightSet:
+          #var s: string
+          echo "eek! " & $j & ": " & $vLeftSet
+          #echo $j & ": " & $(vLeftSet == vRightSet)
+          doAssert(
+            false
+          )
+      myTbl[c].add uint(j)
+
+  for j in 0 ..< prevSeq[].len():
+    let cData0 = addr prevSeq[j]
+    #let cUnit0 = addr self.cUnitSeq
+    var toAdd: array[cidxLim, seq[uint]]
+    #echo $j & ": " & $cData0.c
+    for v in cData0.c.c:
+      #for i in 0 ..< prevSeq[].len():
+      for i in myTbl[v]:
+        let cData1 = addr prevSeq[i]
+        #self.innerFunc(
+        #  cData0=cData0[],
+        #  cData1=cData1[],
+        #)
+        if int(i) != j:
+          #for cInfo0 in cData0.cInfoArr:
+          for k in CubeIdx(0) ..< cidxLim:
+            let cInfo0 = cData0.cInfoArr[k]
+            if not cInfo0.cidx.isSome:
+              echo $k 
+            doAssert(
+              cInfo0.cidx.isSome
+            )
+            let cInfo1 = (
+              addr cData1.cInfoArr[revCubeIdx(cInfo0.cidx.get()) ]
+            )
+            let cUnit0 = addr self.cUnitSeq[cInfo0.unitIdx]
+            let cUnit1 = addr self.cUnitSeq[cInfo1.unitIdx]
+            if isAdjSide(left=cUnit0, right=cUnit1):
+              ##var s: string
+              #echo "have adjacent side: " & $i
+              #echo $cInfo0.cidx & " " & $cInfo1.cidx
+              #echo cUnit0.vArr
+              #echo cUnit1.vArr
+              #echo ""
+              toAdd[cInfo0.cidx.get()].add i
+      #for cInfo in cData.cInfoArr:
+      #  let revCidx = revCubeIdx(cidx=cInfo.cidx)
+    #echo "----"
+    result.add toAdd
+proc cubesOptSecond(
+  self: var ObjConvert
+) =
+  # step 1: if two cubes are directly beside each other, don't draw the
+  # faces between them
+  # step 2: if all faces in a vertex are removed by the above rule, delete
+  # the vertex too
+  # done
+  #var toAddArr: array[cidxLim, seq[(uint, uint)]]
+  #self.cDataOptArrSeq.add toAddArr
+
+  var currSeq: seq[CubeData]
+  let prevSeq = addr self.cDataOptS2d[^1]
+  var mySetTbl: Table[HashSet[Triple[int32]], uint]
+  for j in 0 ..< prevSeq[].len():
+    let cData = addr prevSeq[j]
+    let tempSet: HashSet[Triple[int32]] = toHashSet(cData.c.c)
+    if tempSet notin mySetTbl:
+      #myTbl[tempSet] = cData[]
+      mySetTbl[tempSet] = uint(j)
+      currSeq.add cData[]
+    else:
+      echo "dbg test: " & $j & ": " & $cData.c.c
+    #if cData
+  #self.cDataOptS2d[^2].setLen(0)
+  prevSeq[].setLen(0)
+  self.cDataOptS2d.add currSeq
+
+  self.cDataAdjS2d.add self.findAdjCubes(
+    #optPrevSeqIdx=some(self.cDataOptS2d.len() - 1)
+  )
+  let adjSeq = addr self.cDataAdjS2d[^1]
+  doAssert(
+    self.cDataOptS2d[^1].len() == adjSeq[].len()
+  )
+  #myTbl.clear()
+  #--------
+  ## BEGIN: old debug way to verify that we successfully hollowed out the
+  ## voxel model!
+  #var myVertTbl: Table[Triple[int32], uint]
+  #for j in 0 ..< self.cDataOptS2d[^1].len():
+  #  let cData: ptr CubeData = addr self.cDataOptS2d[^1][j]
+  #  #let myAdj = addr 
+  #  for cidx in CubeIdx(0) ..< cidxLim:
+  #    let adjSeq = addr adjSeq[j][cidx]
+  #    if adjSeq[].len() > 0:
+  #      discard
+  #    else:
+  #      #echo $j & ": " & $cidx & " " & $cData.c.c
+  #      let cInfo = addr cData.cInfoArr[cidx]
+  #      let unit: ptr CubeUnit = addr self.cUnitSeq[cInfo.unitIdx]
+  #      let quad = addr self.fSortSeq[unit.fIdx]
+  #      var fSeq: seq[Triple[uint]]
+  #      var vnIdx: uint = 0
+
+  #      case cidx:
+  #      of cidxFront:
+  #        vnIdx = vnConvArr[rcidxFront][0]
+  #      of cidxBack:
+  #        vnIdx = vnConvArr[rcidxFront][1]
+  #      of cidxLeft:
+  #        vnIdx = vnConvArr[rcidxLeft][0]
+  #      of cidxRight:
+  #        vnIdx = vnConvArr[rcidxLeft][1]
+  #      of cidxBottom:
+  #        vnIdx = vnConvArr[rcidxBottom][0]
+  #      of cidxTop:
+  #        vnIdx = vnConvArr[rcidxBottom][1]
+  #      else:
+  #        discard
+
+  #      for i in 0 ..< quadVertArrLen:
+  #        let v = unit.vArr[i]
+  #        var fTemp: Triple[uint]
+  #        #self.vOutpSeq
+  #        var vSeqIdx: uint = 0
+
+  #        if v notin myVertTbl:
+  #          vSeqIdx = uint(self.vOutpSeq.len())
+  #          self.vOutpSeq.add v
+  #        else:
+  #          vSeqIdx = myVertTbl[v]
+  #        fTemp.v[uint(fidxV)] = vSeqIdx + 1
+  #        #for k in 0 ..< quadVertArrLen:
+  #        fTemp.v[uint(fidxVt)] = quad[0].v[uint(fidxVt)]
+  #        #fTemp.v[uint(fidxVn)] = quad[0].v[uint(fidxVn)]
+  #        fTemp.v[uint(fidxVn)] = vnIdx
+  #        fSeq.add fTemp
+  #      case cidx:
+  #      of cidxBack, cidxRight, cidxBottom:
+  #        self.fOutpSeq.add fSeq
+  #      of cidxFront, cidxLeft, cidxTop:
+  #        var tempFSeq: seq[Triple[uint]]
+  #        var i: int = quadVertArrLen - 1
+  #        while i >= 0:
+  #          tempFSeq.add fSeq[i]
+  #          i -= 1
+  #        self.fOutpSeq.add tempFSeq
+  #      else:
+  #        discard
+  ## END: old debug way to verify that we successfully hollowed out the
+  ## voxel model!
+  #--------
+
+  #for j in 0 ..< adjSeq.len():
+  #  let myArr = addr adjSeq[j]
+
+  #echo prevSeq[].len()
+  #echo adjSeq.len()
+
+  #let prevArrSeq = addr self.cDataOptArrSeq[^2]
+  #let currArrSeq = addr self.cDataOptArrSeq[^1]
+
+  #for j in 0 ..< prevSeq[].len():
+  #  let cData = addr prevSeq[j]
+  #  for cInfo in cData.cInfoArr:
+  #    toAddArr[cInfo.cidx].add uint(j) #cInfo.unitIdx
+
+
+  #prevSeq[].setLen(0)
+  #self.cDataOptS2d[^2].setLen(0)
 
 proc cubesToRects(
   self: var ObjConvert
 ) = 
-  discard
+  #var myVertTbl: Table[Triple[int32], uint]
+  #var myVertTbl: Table[Triple[int32], uint]
+  var rDataArr: array[
+    cidxLim,
+    #Table[Triple[int32], uint],
+    RectData
+  ]
+  let adjSeq = addr self.cDataAdjS2d[^1]
+  for j in 0 ..< self.cDataOptS2d[^1].len():
+    let cData: ptr CubeData = addr self.cDataOptS2d[^1][j]
+    #let myAdj = addr 
+    for cidx in CubeIdx(0) ..< cidxLim:
+      #var rcidx: ReducedCubeIdx
+      #case cidx:
+      #of cidxFront, cidxBack:
+      #  rcidx = rcidxFront
+      #of cidxLeft, cidxRight:
+      #  rcidx = rcidxLeft
+      #of cidxBottom, cidxTop:
+      #  rcidx = rcidxBottom
+      #else:
+      #  doAssert(false)
+
+      let rData = addr rDataArr[cidx]
+
+      let adjSeq = addr adjSeq[j][cidx]
+      if adjSeq[].len() > 0:
+        discard
+      else:
+        discard
+        ##echo $j & ": " & $cidx & " " & $cData.c.c
+        #let cInfo = addr cData.cInfoArr[cidx]
+        #let unit: ptr CubeUnit = addr self.cUnitSeq[cInfo.unitIdx]
+        #let quad = addr self.fSortSeq[unit.fIdx]
+        #var fSeq: seq[Triple[uint]]
+        #var vnIdx: uint = 0
+
+        #case cidx:
+        #of cidxFront:
+        #  vnIdx = vnConvArr[rcidxFront][0]
+        #of cidxBack:
+        #  vnIdx = vnConvArr[rcidxFront][1]
+        #of cidxLeft:
+        #  vnIdx = vnConvArr[rcidxLeft][0]
+        #of cidxRight:
+        #  vnIdx = vnConvArr[rcidxLeft][1]
+        #of cidxBottom:
+        #  vnIdx = vnConvArr[rcidxBottom][0]
+        #of cidxTop:
+        #  vnIdx = vnConvArr[rcidxBottom][1]
+        #else:
+        #  discard
+
 proc rectsToTris(
   self: var ObjConvert
 ) =
@@ -1017,6 +1405,7 @@ proc doOpt(
   self.quadsSort()
   self.quadsToCubes()
   self.cubesOptFirst()
+  self.cubesOptSecond()
   self.cubesToRects()
   self.rectsToTris()
   #self.outp.add "let v = [\n"
@@ -1025,13 +1414,7 @@ proc doOpt(
   #  self.outp.add ",\n"
   #self.outp.add "]\n"
 
-  # step 1: if two cubes are directly beside each other, don't draw the
-  # faces between them
-  # step 2: if all faces in a vertex are removed by the above rule, delete
-  # the vertex too
-  # done
-
-  for v in self.vOptSeq:
+  for v in self.vOutpSeq:
     self.outp.add "v "
     for i in 0 ..< v.v.len():
       self.outp.add $v.v[i]
@@ -1077,7 +1460,6 @@ proc doTri(
 
 proc mkObjConv*(
   inputFname: string,
-  #isTri: bool,
   mode: Mode,
   scalePow2: uint,
 ): ObjConvert = 
@@ -1092,18 +1474,14 @@ proc mkObjConv*(
       let tempSplit = temp[1].splitWhitespace()
       case temp[0]:
       of "vn":
-        #ret.vnInpSeq.add tempSplit
-        #ret.vnInpSeq.add(seq[float64])
         var toAdd: seq[float64]
         for item in tempSplit:
           toAdd.add parseFloat(item)
         ret.vnInpSeq.add toAdd
       of "vt":
-        #if not isTri:
         case ret.mode:
-        #of mdTrisToQuads, mdOpt:
         of mdOpt:
-          # --tri-to-quad, --quad
+          # --opt
           ret.vtInpSeq.add(
             (
               parseFloat(tempSplit[0]),
@@ -1112,25 +1490,19 @@ proc mkObjConv*(
           )
         of mdTri:
           # --tri
-          #ret.vtInpSeq.add tempSplit
-          #var toAdd: seq[uint]
-          #for item in tempSplit:
-          #  toAdd.add parseUInt(item)
           let tempY = (
             (
               uint(
                 (
                   parseFloat(tempSplit[1]) #* 4
                 ) * txtSubSizeY #* 16
-              ) #div 4
-            ) #- 1
+              )
+            )
           )
           let tempX = (
             uint(
-              #parseFloat(tempSplit[0]) * 4 #* 16
-              #parseFloat(tempSplit[0]) #* 16
               parseFloat(tempSplit[0]) * txtSubSizeX
-            ) #div 4
+            )
           )
           let temp = (
             uint(
@@ -1140,19 +1512,9 @@ proc mkObjConv*(
                 ) + (
                   tempX
                 )
-              ) #/ 16
-              #/ (
-              #  4
-              #)
+              )
             )
           )
-          #ret.outp.add "("
-          #ret.outp.add $tempY
-          #ret.outp.add ", "
-          #ret.outp.add $tempX
-          #ret.outp.add ") -> "
-          #ret.outp.add $temp
-          #ret.outp.add "\n"
           ret.vtInpSeq.add(
             (
               float64(temp),
@@ -1164,60 +1526,27 @@ proc mkObjConv*(
             false
           )
       of "v":
-        #ret.vInpSeq.add tempSplit
-        #var toAdd: seq[float64]
-        #for item in tempSplit:
-        #  toAdd.add parseFloat(item)
-        #ret.vInpSeq.add Vert(
-        #  v: [
-        #    toAdd[0],
-        #    toAdd[1],
-        #    toAdd[2],
-        #  ]
-        #)
         var toAdd: Triple[int32]
         for i in 0 ..< tempSplit.len():
           toAdd.v[i] = int32(round(parseFloat(tempSplit[i])))
 
-        #if toAdd notin ret.vTbl:
-        #  ret.vTbl[toAdd] = @[]
-        #ret.vTbl[toAdd].add uint(ret.vInpSeq.len())
-
         ret.vInpSeq.add toAdd
       of "f":
-        #var toAdd: seq[FaceElem]
-        #ret.fInpSeq.add temp[1].splitWhitespace()
-
-        #for item in tempSplit:
-        #  let faceSplit = item.split("/")
-        #  toAdd.add FaceElem(
-        #    vIdx: parseUInt(faceSplit[0]),
-        #    vtIdx: parseUInt(faceSplit[1]),
-        #    vnIdx: parseUInt(faceSplit[2]),
-        #  )
-        #ret.fInpSeq.add toAdd
         var toAdd: seq[Triple[uint]]
         for i in 0 ..< tempSplit.len():
           let faceSplit = tempSplit[i].split("/")
           var tempTriple: Triple[uint]
           for j in 0 ..< faceSplit.len():
-            #toAdd.v[i].v[j] = parseUInt(faceSplit[j]) - 1
-            #toAdd.v[i].add parseUInt(faceSplit[j]) - 1
             var tempUInt = parseUInt(faceSplit[j])
-            #if isTri:
             if ret.mode == mdTri:
               tempUInt -= 1
             tempTriple.v[j] = tempUInt
           toAdd.add tempTriple
         ret.fInpSeq.add toAdd
       else:
-        #if not isTri:
         if ret.mode != mdTri:
           ret.outp.add line & "\n"
-  #if not ret.isTri:
   case ret.mode:
-  #of mdTrisToQuads:
-  #  ret.doTrisToQuads()
   of mdOpt:
     ret.doOpt()
   of mdTri:
