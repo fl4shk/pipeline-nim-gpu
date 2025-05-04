@@ -9,9 +9,6 @@ import std/options
 
 type 
   Triple*[T] = object
-    #x*: float64
-    #y*: float64
-    #z*: float64
     v*: array[3, T]
 
 proc nonSqrtDist*[T](
@@ -157,20 +154,46 @@ type
 
 type
   CubeUnit* = object
+    # `vArr`: vertices
     vArr*: array[quadVertArrLen, Triple[int32]]
     rcidx*: Option[ReducedCubeIdx]
     cidx*: Option[CubeIdx]
     n*: array[quadVertArrLen, Triple[int32]] # normalized
+    # `fIdx`: index into some `f...Seq`
     fIdx*: int
 var vnConvArr: array[rcidxLim, array[2, uint]]
 
-proc isAdjSide*(
+proc toVnIdx(
+  cidx: CubeIdx
+): uint =
+  case cidx:
+  of cidxFront:
+    result = vnConvArr[rcidxFront][0]
+  of cidxBack:
+    result = vnConvArr[rcidxFront][1]
+  of cidxLeft:
+    result = vnConvArr[rcidxLeft][0]
+  of cidxRight:
+    result = vnConvArr[rcidxLeft][1]
+  of cidxBottom:
+    result = vnConvArr[rcidxBottom][0]
+  of cidxTop:
+    result = vnConvArr[rcidxBottom][1]
+  else:
+    result = 0
+
+proc isAdjSide(
   left: ptr CubeUnit,
   right: ptr CubeUnit,
 ): bool =
   let vLeftSet = toHashSet(left.vArr)
   let vRightSet = toHashSet(right.vArr)
   result = (vLeftSet == vRightSet)
+#proc isAdjSide(
+#  left: int,
+#  right: int
+#): bool =
+#  return left == right
 
 proc hasSharedVertPair*(
   left: ptr CubeUnit,
@@ -502,25 +525,54 @@ type
     rSeq*: seq[array[quadVertArrLen, Triple[int32]]] # rect `seq`
     rIdxTbl*: Table[Triple[int32], seq[uint]] # vert to `rSeq` index
 
+#type
+#  RectSlice1d = object
+#    asdf*: int
+
 type
   ObjConvert* = object
-    #cmdSeq*: seq[string]
+    # `vnInpSeq`: normals; we don't change these
     vnInpSeq*: seq[seq[float64]]
-    #vnOutpSeq*: seq[seq[float64]]
-    #vnTbl*: Table[Vert, bool]
+
+    # `vtInpSeq`: texture coords; we don't change these
     vtInpSeq*: seq[(float64, float64)]
-    #vtOutpSeq*: seq[seq[uint]]
-    #vtTbl*: Table[VertUv, bool]
+
+    # `vInpSeq`: input vertices: obtained from the input `.obj` file
     vInpSeq*: seq[Triple[int32]]
+
+    # `vOptSeq`: optimize out duplicate vertices from the `vInpSeq`
     vOptSeq*: seq[Triple[int32]]
+
+    # `vOutpSeq`: vertices to be output in final result `.obj` file
     vOutpSeq*: seq[Triple[int32]]
+
     # unlikely to have more than a small handful
     #vTbl*: Table[Triple[int32], seq[uint]]
+
+    # `fInpSeq`: faces obtained from input `.obj` file`
+    # (must be indexed mode)
+    # vertices: `vInpSeq`
     fInpSeq*: seq[seq[Triple[uint]]]
+
+    # `fQuadSeq`:
+    # faces converted from triangles (as contained in `fInpSeq`) into quads
+    # (or just copied over from `fInpSeq` if we have all quads already)
+    # vertices: `vInpSeq`
     fQuadSeq*: seq[seq[Triple[uint]]]
+
+    # `fOptSeq`:
+    # faces output by `quadsOptFirst()`
+    # vertices: `vOptSeq`
     fOptSeq*: seq[seq[Triple[uint]]]
+
+    # `fSortSeq`:
+    # faces output by `quadsSort()`
+    # vertices: `vOptSeq`
     fSortSeq*: seq[seq[Triple[uint]]]
+
+    # `fOutpSeq`: faces to be output in final result `.obj` file
     fOutpSeq*: seq[seq[Triple[uint]]]
+
     #fTbl: Table[array[3, FaceElem], bool]
     #fInpSeq*: seq[array[3, FaceElem]]
     #cTbl*: Table[uint, Cube] # maps `vtIdx` to `Cube`
@@ -530,15 +582,22 @@ type
     # `Cube`s)
     #cfPairTbl*: Table[uint, array[2, uint]]
 
+    # `cUnitSeq`: every `CubeUnit` goes here
     cUnitSeq*: seq[CubeUnit]
     vUnitInpTbl*: Table[Triple[int32], seq[uint]]
-    vUnitOptTbl*: Table[Triple[int32], seq[uint]]
+    #vUnitOptTbl*: Table[Triple[int32], seq[uint]]
 
     cDataIdxTbl*: Table[HashSet[Triple[int32]], uint]
     cDataInpSeq*: seq[CubeData] #seq[(Cube, seq[uint])]
     #cDataOptArrSeq*: seq[array[cidxLim, seq[uint]]]
     cDataOptS2d*: seq[seq[CubeData]]
     cDataAdjS2d*: seq[seq[array[cidxLim, seq[uint]]]]
+    #rDataTblArr*: array[cidxLim, Table[Triple[int32], RectData]]
+
+
+    # indexes into `vUnitInpTbl[...].`
+    #rSortArr*: array[cidxLim, ]
+
     outp*: string
     #isTri*: bool
     mode*: Mode
@@ -1128,17 +1187,6 @@ proc findAdjCubes(
     tempPrevSeqIdx = self.cDataOptS2d.len() - 1
   let prevSeq = addr self.cDataOptS2d[tempPrevSeqIdx]
 
-  #proc innerFunc(
-  #  self: var ObjConvert,
-  #  cData0: var CubeData,
-  #  cData1: var CubeData,
-  #) =
-  #  #let currSeq = addr self.cDataOptS2d[^1]
-  #  #let a = addr currSeq
-  #  for cInfo0 in cData0.cInfoArr:
-  #    let cInfo1 = addr cData1.cInfoArr[revCubeIdx(cInfo0.cidx)]
-  #    let cUnit0 = addr self.cUnitSeq[cInfo0.unitIdx]
-  #    let cUnit1 = addr self.cUnitSeq[cInfo1.unitIdx]
   var myTbl: Table[Triple[int32], seq[uint]]
   for j in 0 ..< prevSeq[].len():
     let cData = addr prevSeq[j]
@@ -1178,10 +1226,6 @@ proc findAdjCubes(
       #for i in 0 ..< prevSeq[].len():
       for i in myTbl[v]:
         let cData1 = addr prevSeq[i]
-        #self.innerFunc(
-        #  cData0=cData0[],
-        #  cData1=cData1[],
-        #)
         if int(i) != j:
           #for cInfo0 in cData0.cInfoArr:
           for k in CubeIdx(0) ..< cidxLim:
@@ -1192,7 +1236,7 @@ proc findAdjCubes(
               cInfo0.cidx.isSome
             )
             let cInfo1 = (
-              addr cData1.cInfoArr[revCubeIdx(cInfo0.cidx.get()) ]
+              addr cData1.cInfoArr[revCubeIdx(cInfo0.cidx.get())]
             )
             let cUnit0 = addr self.cUnitSeq[cInfo0.unitIdx]
             let cUnit1 = addr self.cUnitSeq[cInfo1.unitIdx]
@@ -1208,6 +1252,62 @@ proc findAdjCubes(
       #  let revCidx = revCubeIdx(cidx=cInfo.cidx)
     #echo "----"
     result.add toAdd
+
+
+proc dbgVerifyHollow(
+  self: var ObjConvert
+) = 
+  # old debug way to verify that we successfully hollowed out the voxel
+  # model!
+  let adjSeq = addr self.cDataAdjS2d[^1]
+  var myVertTbl: Table[Triple[int32], uint]
+  for j in 0 ..< self.cDataOptS2d[^1].len():
+    let cData: ptr CubeData = addr self.cDataOptS2d[^1][j]
+    #let myAdj = addr 
+    for cidx in CubeIdx(0) ..< cidxLim:
+      let adjSeq = addr adjSeq[j][cidx]
+      if adjSeq[].len() > 0:
+        discard
+      else:
+        #echo $j & ": " & $cidx & " " & $cData.c.c
+        let cInfo = addr cData.cInfoArr[cidx]
+        let unit: ptr CubeUnit = addr self.cUnitSeq[cInfo.unitIdx]
+        let quad = addr self.fSortSeq[unit.fIdx]
+        var fSeq: seq[Triple[uint]]
+        #var vnIdx: uint = 0
+
+        let vnIdx = toVnIdx(cidx=cidx)
+
+        for i in 0 ..< quadVertArrLen:
+          let v = unit.vArr[i]
+          var fTemp: Triple[uint]
+          #self.vOutpSeq
+          var vSeqIdx: uint = 0
+
+          if v notin myVertTbl:
+            vSeqIdx = uint(self.vOutpSeq.len())
+            self.vOutpSeq.add v
+          else:
+            vSeqIdx = myVertTbl[v]
+          fTemp.v[uint(fidxV)] = vSeqIdx + 1
+          #for k in 0 ..< quadVertArrLen:
+          fTemp.v[uint(fidxVt)] = quad[0].v[uint(fidxVt)]
+          #fTemp.v[uint(fidxVn)] = quad[0].v[uint(fidxVn)]
+          fTemp.v[uint(fidxVn)] = vnIdx
+          fSeq.add fTemp
+        case cidx:
+        of cidxBack, cidxRight, cidxBottom:
+          self.fOutpSeq.add fSeq
+        of cidxFront, cidxLeft, cidxTop:
+          var tempFSeq: seq[Triple[uint]]
+          var i: int = quadVertArrLen - 1
+          while i >= 0:
+            tempFSeq.add fSeq[i]
+            i -= 1
+          self.fOutpSeq.add tempFSeq
+        else:
+          discard
+  #--------
 proc cubesOptSecond(
   self: var ObjConvert
 ) =
@@ -1231,7 +1331,6 @@ proc cubesOptSecond(
       currSeq.add cData[]
     else:
       echo "dbg test: " & $j & ": " & $cData.c.c
-    #if cData
   #self.cDataOptS2d[^2].setLen(0)
   prevSeq[].setLen(0)
   self.cDataOptS2d.add currSeq
@@ -1243,73 +1342,7 @@ proc cubesOptSecond(
   doAssert(
     self.cDataOptS2d[^1].len() == adjSeq[].len()
   )
-  #myTbl.clear()
-  #--------
-  ## BEGIN: old debug way to verify that we successfully hollowed out the
-  ## voxel model!
-  #var myVertTbl: Table[Triple[int32], uint]
-  #for j in 0 ..< self.cDataOptS2d[^1].len():
-  #  let cData: ptr CubeData = addr self.cDataOptS2d[^1][j]
-  #  #let myAdj = addr 
-  #  for cidx in CubeIdx(0) ..< cidxLim:
-  #    let adjSeq = addr adjSeq[j][cidx]
-  #    if adjSeq[].len() > 0:
-  #      discard
-  #    else:
-  #      #echo $j & ": " & $cidx & " " & $cData.c.c
-  #      let cInfo = addr cData.cInfoArr[cidx]
-  #      let unit: ptr CubeUnit = addr self.cUnitSeq[cInfo.unitIdx]
-  #      let quad = addr self.fSortSeq[unit.fIdx]
-  #      var fSeq: seq[Triple[uint]]
-  #      var vnIdx: uint = 0
-
-  #      case cidx:
-  #      of cidxFront:
-  #        vnIdx = vnConvArr[rcidxFront][0]
-  #      of cidxBack:
-  #        vnIdx = vnConvArr[rcidxFront][1]
-  #      of cidxLeft:
-  #        vnIdx = vnConvArr[rcidxLeft][0]
-  #      of cidxRight:
-  #        vnIdx = vnConvArr[rcidxLeft][1]
-  #      of cidxBottom:
-  #        vnIdx = vnConvArr[rcidxBottom][0]
-  #      of cidxTop:
-  #        vnIdx = vnConvArr[rcidxBottom][1]
-  #      else:
-  #        discard
-
-  #      for i in 0 ..< quadVertArrLen:
-  #        let v = unit.vArr[i]
-  #        var fTemp: Triple[uint]
-  #        #self.vOutpSeq
-  #        var vSeqIdx: uint = 0
-
-  #        if v notin myVertTbl:
-  #          vSeqIdx = uint(self.vOutpSeq.len())
-  #          self.vOutpSeq.add v
-  #        else:
-  #          vSeqIdx = myVertTbl[v]
-  #        fTemp.v[uint(fidxV)] = vSeqIdx + 1
-  #        #for k in 0 ..< quadVertArrLen:
-  #        fTemp.v[uint(fidxVt)] = quad[0].v[uint(fidxVt)]
-  #        #fTemp.v[uint(fidxVn)] = quad[0].v[uint(fidxVn)]
-  #        fTemp.v[uint(fidxVn)] = vnIdx
-  #        fSeq.add fTemp
-  #      case cidx:
-  #      of cidxBack, cidxRight, cidxBottom:
-  #        self.fOutpSeq.add fSeq
-  #      of cidxFront, cidxLeft, cidxTop:
-  #        var tempFSeq: seq[Triple[uint]]
-  #        var i: int = quadVertArrLen - 1
-  #        while i >= 0:
-  #          tempFSeq.add fSeq[i]
-  #          i -= 1
-  #        self.fOutpSeq.add tempFSeq
-  #      else:
-  #        discard
-  ## END: old debug way to verify that we successfully hollowed out the
-  ## voxel model!
+  #mySetTbl.clear()
   #--------
 
   #for j in 0 ..< adjSeq.len():
@@ -1330,16 +1363,17 @@ proc cubesOptSecond(
   #prevSeq[].setLen(0)
   #self.cDataOptS2d[^2].setLen(0)
 
-proc cubesToRects(
+proc cubeFacesToRects(
   self: var ObjConvert
 ) = 
   #var myVertTbl: Table[Triple[int32], uint]
   #var myVertTbl: Table[Triple[int32], uint]
-  var rDataArr: array[
-    cidxLim,
-    #Table[Triple[int32], uint],
-    RectData
-  ]
+  #var rDataArr: array[
+  #  cidxLim,
+  #  #Table[Triple[int32], uint],
+  #  RectData
+  #]
+  #let rDataArr = addr self.rDataArr
   let adjSeq = addr self.cDataAdjS2d[^1]
   for j in 0 ..< self.cDataOptS2d[^1].len():
     let cData: ptr CubeData = addr self.cDataOptS2d[^1][j]
@@ -1356,35 +1390,30 @@ proc cubesToRects(
       #else:
       #  doAssert(false)
 
-      let rData = addr rDataArr[cidx]
+      let vnIdx = toVnIdx(cidx=cidx)
 
-      let adjSeq = addr adjSeq[j][cidx]
-      if adjSeq[].len() > 0:
-        discard
-      else:
-        discard
-        ##echo $j & ": " & $cidx & " " & $cData.c.c
-        #let cInfo = addr cData.cInfoArr[cidx]
-        #let unit: ptr CubeUnit = addr self.cUnitSeq[cInfo.unitIdx]
-        #let quad = addr self.fSortSeq[unit.fIdx]
-        #var fSeq: seq[Triple[uint]]
-        #var vnIdx: uint = 0
+      #let rData: ptr RectData = addr self.rDataArr[cidx]
 
-        #case cidx:
-        #of cidxFront:
-        #  vnIdx = vnConvArr[rcidxFront][0]
-        #of cidxBack:
-        #  vnIdx = vnConvArr[rcidxFront][1]
-        #of cidxLeft:
-        #  vnIdx = vnConvArr[rcidxLeft][0]
-        #of cidxRight:
-        #  vnIdx = vnConvArr[rcidxLeft][1]
-        #of cidxBottom:
-        #  vnIdx = vnConvArr[rcidxBottom][0]
-        #of cidxTop:
-        #  vnIdx = vnConvArr[rcidxBottom][1]
-        #else:
-        #  discard
+      #let oneCubeAdjSeq = addr adjSeq[j][cidx]
+      #if oneCubeAdjSeq[].len() > 0:
+      #  discard
+      #else:
+      #  #rData.rSeq
+      #  ##echo $j & ": " & $cidx & " " & $cData.c.c
+      #  #let cInfo = addr cData.cInfoArr[cidx]
+      #  #let unit: ptr CubeUnit = addr self.cUnitSeq[cInfo.unitIdx]
+      #  #let quad = addr self.fSortSeq[unit.fIdx]
+      #  #var fSeq: seq[Triple[uint]]
+      #  #var vnIdx: uint = 0
+
+proc rectsSlice1d(
+  self: var ObjConvert
+) =
+  discard
+proc rectsSlice2d(
+  self: var ObjConvert
+) =
+  discard
 
 proc rectsToTris(
   self: var ObjConvert
@@ -1406,7 +1435,9 @@ proc doOpt(
   self.quadsToCubes()
   self.cubesOptFirst()
   self.cubesOptSecond()
-  self.cubesToRects()
+  self.cubeFacesToRects()
+  self.rectsSlice1d()
+  self.rectsSlice2d()
   self.rectsToTris()
   #self.outp.add "let v = [\n"
   #for v in self.vInpSeq:
@@ -1464,7 +1495,6 @@ proc mkObjConv*(
   scalePow2: uint,
 ): ObjConvert = 
   var ret: ObjConvert
-  #ret.isTri = isTri
   ret.mode = mode
   ret.scalePow2 = scalePow2
   ret.scale = float64(1 shl scalePow2)
