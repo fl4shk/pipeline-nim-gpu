@@ -272,10 +272,23 @@ proc isCoplanarEtc(
   #if not (left.cidx.isSome() and right.cidx.isSome()):
   #  return false
 
-  doAssert(left.cidx.isSome())
-  doAssert(right.cidx.isSome())
-  doAssert(left.rcidx.isSome())
-  doAssert(right.rcidx.isSome())
+  #doAssert(left.cidx.isSome())
+  #doAssert(right.cidx.isSome())
+  #doAssert(left.rcidx.isSome())
+  #doAssert(right.rcidx.isSome())
+  if not (
+    (
+      left.cidx.isSome()
+    ) and (
+      right.cidx.isSome()
+    ) 
+    #and (
+    #  left.rcidx.isSome()
+    #) and (
+    #  right.rcidx.isSome()
+    #)
+  ):
+    return false
 
   if left.cidx.get() != right.cidx.get():
     return false
@@ -1432,6 +1445,60 @@ proc findAdjCubes(
     result.add toAdd
 
 
+proc dbgAddFace(
+  self: var ObjConvert,
+  cData: ptr CubeData,
+  #cUnit: var CubeUnit,
+  foundVTbl: var Table[Triple[int32], uint],
+  vArr: var array[quadVertArrLen, Triple[int32]],
+  #quad: var seq[Triple[uint]],
+  #vtIdxArr: array[quadVertArrLen, uint],
+  #fSeq: var seq[Triple[uint]],
+  #idx: int,
+  cidx: CubeIdx,
+) =
+  #let cData: ptr CubeData = addr self.cDataOptS2d[^1][idx]
+  let vnIdx = toVnIdx(cidx=cidx)
+  let cInfo = addr cData.cInfoArr[cidx]
+  let cUnit: ptr CubeUnit = addr self.cUnitSeq[cInfo.unitIdx]
+  let quad = addr self.fSortSeq[cUnit.fIdx]
+
+  var fSeq: seq[Triple[uint]]
+  for i in 0 ..< quadVertArrLen:
+    #let v = cUnit.vArr[i]
+    let v = vArr[i]
+    var fTemp: Triple[uint]
+    var vSeqIdx: uint = 0
+
+    if v notin foundVTbl:
+      vSeqIdx = uint(self.vOutpSeq.len())
+      foundVTbl[v] = vSeqIdx
+      self.vOutpSeq.add v
+    else:
+      vSeqIdx = foundVTbl[v]
+
+    fTemp.v[uint(fidxV)] = vSeqIdx + 1
+
+    # TODO:
+    # The UV coordinates should be the same for each element of
+    # `quad` because each quad is a solid color. Maybe this could be
+    # changed later if I decide to support "real" textures?
+    fTemp.v[uint(fidxVt)] = quad[i].v[uint(fidxVt)]
+    #fTemp.v[uint(fidxVt)] = vtIdxArr[i]
+    fTemp.v[uint(fidxVn)] = vnIdx
+    fSeq.add fTemp
+  case cidx:
+  of cidxBack, cidxRight, cidxBottom:
+    self.fOutpSeq.add fSeq
+  of cidxFront, cidxLeft, cidxTop:
+    # Reverse the order of the vertices.
+    # I think this is for ensuring correct winding order.
+    # Also why can't `for` loops go in reverse order?
+    # Maybe they can, and I'm just not aware of how.
+    self.fOutpSeq.add fSeq.reversed()
+  else:
+    discard
+
 proc dbgVerifyHollow(
   self: var ObjConvert
 ) =
@@ -1439,61 +1506,105 @@ proc dbgVerifyHollow(
   # model!
   let adjSeq = addr self.cDataAdjS2d[^1]
   #var myVertTbl: Table[Triple[int32], uint]
-  for j in 0 ..< self.cDataOptS2d[^1].len():
-    let cData: ptr CubeData = addr self.cDataOptS2d[^1][j]
+
+  var foundVTbl: Table[Triple[int32], uint]
+
+  for idx in 0 ..< self.cDataOptS2d[^1].len():
+    let cData: ptr CubeData = addr self.cDataOptS2d[^1][idx]
     #let myAdj = addr
     for cidx in CubeIdx(0) ..< cidxLim:
-      let adjSeq = addr adjSeq[j][cidx]
+      let adjSeq = addr adjSeq[idx][cidx]
       if adjSeq[].len() > 0:
         # If we have another cube on this side (indicated by `cidx`),
         # we don't want to do further processing of this specific side.
         # This is for the purposes of hollowing out the voxel model.
         discard
       else:
-        #echo $j & ": " & $cidx & " " & $cData.c.c
+        #echo $idx & ": " & $cidx & " " & $cData.c.c
         let cInfo = addr cData.cInfoArr[cidx]
         let cUnit: ptr CubeUnit = addr self.cUnitSeq[cInfo.unitIdx]
-        let quad = addr self.fSortSeq[cUnit.fIdx]
-        var fSeq: seq[Triple[uint]]
+        #let quad = addr self.fSortSeq[cUnit.fIdx]
+        #var fSeq: seq[Triple[uint]]
+        self.dbgAddFace(
+          cData=cData,
+          foundVTbl=foundVTbl,
+          vArr=cUnit.vArr,
+          #vtIdxArr=[
+          #  #quad[i].v[uint(fidxVt)] for i in 0 ..< quadVertArrLen
+          #  quad[0].v[uint(fidxVt)],
+          #  quad[1].v[uint(fidxVt)],
+          #  quad[2].v[uint(fidxVt)],
+          #  quad[3].v[uint(fidxVt)],
+          #],
+          cidx=cidx,
+        )
 
-        let vnIdx = toVnIdx(cidx=cidx)
+        #let vnIdx = toVnIdx(cidx=cidx)
 
-        for i in 0 ..< quadVertArrLen:
-          let v = cUnit.vArr[i]
-          var fTemp: Triple[uint]
-          var vSeqIdx: uint = 0
+        #for i in 0 ..< quadVertArrLen:
+        #  let v = cUnit.vArr[i]
+        #  var fTemp: Triple[uint]
+        #  var vSeqIdx: uint = 0
 
-          vSeqIdx = uint(self.vOutpSeq.len())
-          self.vOutpSeq.add v
-          fTemp.v[uint(fidxV)] = vSeqIdx + 1
+        #  vSeqIdx = uint(self.vOutpSeq.len())
+        #  self.vOutpSeq.add v
+        #  fTemp.v[uint(fidxV)] = vSeqIdx + 1
 
-          # TODO:
-          # The UV coordinates should be the same for each element of
-          # `quad` because each quad is a solid color. Maybe this could be
-          # changed later if I decide to support "real" textures?
-          #for k in 0 ..< quadVertArrLen:
-          fTemp.v[uint(fidxVt)] = quad[i].v[uint(fidxVt)]
-          #fTemp.v[uint(fidxVn)] = quad[0].v[uint(fidxVn)]
-          fTemp.v[uint(fidxVn)] = vnIdx
-          fSeq.add fTemp
-        case cidx:
-        of cidxBack, cidxRight, cidxBottom:
-          self.fOutpSeq.add fSeq
-        of cidxFront, cidxLeft, cidxTop:
-          #var tempFSeq: seq[Triple[uint]]
-          # Reverse the order of the vertices.
-          # I think this is for ensuring correct winding order.
-          # Also why can't `for` loops go in reverse order?
-          # Maybe they can, and I'm just not aware of how.
-          #var i: int = quadVertArrLen - 1
-          #while i >= 0:
-          #  tempFSeq.add fSeq[i]
-          #  i -= 1
-          #self.fOutpSeq.add tempFSeq
-          self.fOutpSeq.add fSeq.reversed()
-        else:
-          discard
+        #  # TODO:
+        #  # The UV coordinates should be the same for each element of
+        #  # `quad` because each quad is a solid color. Maybe this could be
+        #  # changed later if I decide to support "real" textures?
+        #  #for k in 0 ..< quadVertArrLen:
+        #  fTemp.v[uint(fidxVt)] = quad[i].v[uint(fidxVt)]
+        #  #fTemp.v[uint(fidxVn)] = quad[0].v[uint(fidxVn)]
+        #  fTemp.v[uint(fidxVn)] = vnIdx
+        #  fSeq.add fTemp
+        #case cidx:
+        #of cidxBack, cidxRight, cidxBottom:
+        #  self.fOutpSeq.add fSeq
+        #of cidxFront, cidxLeft, cidxTop:
+        #  # Reverse the order of the vertices.
+        #  # I think this is for ensuring correct winding order.
+        #  # Also why can't `for` loops go in reverse order?
+        #  # Maybe they can, and I'm just not aware of how.
+        #  self.fOutpSeq.add fSeq.reversed()
+        #else:
+        #  discard
   #--------
+proc dbgVerifyRectCoplFirst(
+  self: var ObjConvert
+) =
+  var foundVTbl: Table[Triple[int32], uint]
+  for cidx in CubeIdx(0) ..< cidxLim:
+    #echo cidx
+    template rCopl: untyped = self.rCoplArr[cidx]
+    template rCoplIdxTbl: untyped = rCopl.rCoplIdxTbl
+    #for idx in 0 ..< self.cDataOptS2d[^1].len():
+    #  let adjSeq
+    var foundSet: HashSet[uint]
+    for idx, mainIdx in rCoplIdxTbl:
+      #echo idx
+      #echo mainIdx
+      if mainIdx in foundSet:
+        continue
+      foundSet.incl mainIdx
+      let cData: ptr CubeData = addr self.cDataOptS2d[^1][idx]
+      #let cInfo = 
+
+      template rCoplMain: untyped = rCopl.rCoplMainSeq[mainIdx]
+      for jdx in 0 ..< rCoplMain.rOutpS2d[0].len():
+        let vArr = addr rCoplMain.rOutpS2d[0][jdx]
+        #let cInfo = addr cData.cInfoArr[cidx]
+        #let cUnit: ptr CubeUnit = addr self.cUnitSeq[cInfo.unitIdx]
+        #echo vArr[]
+
+        self.dbgAddFace(
+          cData=cData,
+          foundVTbl=foundVTbl,
+          vArr=vArr[],
+          cidx=cidx,
+        )
+
 proc cubesOptSecond(
   self: var ObjConvert
 ) =
@@ -1645,19 +1756,22 @@ proc rectCoplsFirst(
     let cUnit0 = addr self.cUnitSeq[cInfo0.unitIdx]
     let quad0 = addr self.fSortSeq[cUnit0.fIdx]
     let quadVt0 = quad0[0].v[uint(fidxVt)]
+    echo "quadVt0: " & $quadVt0
 
     var toAddRcm: RectCoplMain
     var myRcmOutpSeq: seq[array[quadVertArrLen, Triple[int32]]]
 
     var deq: Deque[uint]
-    var foundSet: HashSet[uint]
+    #var foundSet: HashSet[uint]
     deq.addLast uint(idx)
     while deq.len() > 0:
       let jdx = deq.popFirst()
       if jdx in rCoplIdxTbl:
+        #echo "test: " & $jdx
         continue
 
       #foundSet.incl jdx
+
       let cData1: ptr CubeData = addr self.cDataOptS2d[^1][jdx]
       let cInfo1 = addr cData1.cInfoArr[cidx]
       let cUnit1 = addr self.cUnitSeq[cInfo1.unitIdx]
@@ -1712,7 +1826,7 @@ proc rectCoplsFirst(
             let cUnit2 = addr self.cUnitSeq[cInfo2.unitIdx]
             if (
               (
-                fastIsCoplanar(
+                isCoplanarEtc(
                   left=cUnit1[],
                   right=cUnit2[],
                 )
@@ -1755,26 +1869,28 @@ proc rectCoplsFirst(
 
     for cidx in CubeIdx(0) ..< cidxLim:
       #if myCidxValidArr[cidx]: # this is probably wrong!
-      for cjdx in CubeIdx(0) ..< cidxLim:
-        if (
-          (
-            adjSeq[idx][cidx].len() > 0
-          ) and (
-            cjdx != revCubeIdxArr[cidx]
-          )
-        ):
-          myCidxValidArr[cjdx] = false
+      #for cjdx in CubeIdx(0) ..< cidxLim:
+      if (
+        (
+          adjSeq[idx][cidx].len() > 0
+        )
+        #or (
+        #  cjdx == revCubeIdxArr[cidx]
+        #)
+      ):
+        #echo "deasserting here: " & $cidx & " " & $cjdx
+        myCidxValidArr[cidx] = false
 
     #echo "testificate:" 
     for cidx in CubeIdx(0) ..< cidxLim:
       if myCidxValidArr[cidx]:
-        #echo (
-        #  $(
-        #    "now handling this `idx`, `cidx`: " 
-        #  ) & (
-        #    $idx & " " & $cidx
-        #  )
-        #)
+        echo (
+          $(
+            "now handling this `idx`, `cidx`: " 
+          ) & (
+            $idx & " " & $cidx
+          )
+        )
         self.myFloodFill(
           idx=idx,
           cidx=cidx,
@@ -1942,6 +2058,7 @@ proc doOpt(
   #self.outp.add "]\n"
 
   #self.dbgVerifyHollow()
+  self.dbgVerifyRectCoplFirst()
 
   for v in self.vOutpSeq:
     self.outp.add "v "
