@@ -1,5 +1,6 @@
 import std/strutils
 #import std/sequtils
+import std/algorithm
 import std/deques
 import std/tables
 #import std/cmdline
@@ -88,6 +89,7 @@ proc `>`*(
   #else:
   #  return false
 
+
 #type
 #  VertUv = object
 #    u*: float64
@@ -165,6 +167,12 @@ type
     rcidxBottom,
     rcidxLim,
 
+type
+  LimitIdx* = enum
+    lidxMin,
+    lidxMax,
+    lidxLim,
+
 #type
 #  CubeFace* = object
 #    #valid*: bool
@@ -172,11 +180,31 @@ type
 
 
 const
+  triVertArrLen* = 3
   quadVertArrLen* = 4
   cubeNumVerts* = 8
   #cubeOrderTriA2dLen* = 2
   #cubeOrderTriArrLen* = 3
   #cubeTriArrLen* = 2
+
+proc quadVertCmp(
+  x: array[quadVertArrLen, Triple[int32]],
+  y: array[quadVertArrLen, Triple[int32]],
+): int =
+  let tupX = (
+    x[0].v[0], x[0].v[1], x[0].v[2],
+    #x[1].v[0], x[1].v[1], x[1].v[2],
+    #x[2].v[0], x[2].v[1], x[2].v[2],
+    #x[3].v[0], x[3].v[1], x[3].v[2],
+  )
+  let tupY = (
+    y[0].v[0], y[0].v[1], y[0].v[2],
+    #y[1].v[0], y[1].v[1], y[1].v[2],
+    #y[2].v[0], y[2].v[1], y[2].v[2],
+    #y[3].v[0], y[3].v[1], y[3].v[2],
+  )
+  result = cmp(tupX, tupY)
+
 type
   Cube* = object
     #c*: array[8, (bool, Triple[int32])]
@@ -244,68 +272,106 @@ proc isAdjSide(
 
 const
   coplRcidxVidxArr: array[rcidxLim, uint] = [
-    1, # rcidxFront: y changes if not coplanar
+    2, # rcidxFront: y changes if not coplanar
     0, # rcidxLeft: x changes if not coplanar
-    2, # rcidxBottom: z changes if not coplanar
+    1, # rcidxBottom: z changes if not coplanar
   ]
   coplCidxVidxArr: array[cidxLim, uint] = [
-    1, # cidxFront: y changes if not coplanar
-    1, # cidxBack: y changes if not coplanar
+    2, # cidxFront: y changes if not coplanar
+    2, # cidxBack: y changes if not coplanar
     0, # cidxLeft: x changes if not coplanar
     0, # cidxRight: x changes if not coplanar
-    2, # cidxBottom: z changes if not coplanar
-    2, # cidxTop: z changes if not coplanar
+    1, # cidxBottom: z changes if not coplanar
+    1, # cidxTop: z changes if not coplanar
+  ]
+  coplCidxVidxA2d: array[cidxLim, array[2, uint]] = [
+    [0, 1], # cidxFront: y changes if not coplanar
+    [0, 1], # cidxBack: y changes if not coplanar
+    [1, 2], # cidxLeft: x changes if not coplanar
+    [1, 2], # cidxRight: x changes if not coplanar
+    [0, 2], # cidxBottom: z changes if not coplanar
+    [0, 2], # cidxTop: z changes if not coplanar
   ]
 
-proc fastIsCoplanar(
-  left: var CubeUnit,
-  right: var CubeUnit,
-): bool =
-  let myIdx = coplRcidxVidxArr[left.rcidx.get()]
-  return (left.vArr[0].v[myIdx] == right.vArr[0].v[myIdx])
-
-proc isCoplanarEtc(
-  left: var CubeUnit,
-  right: var CubeUnit,
-  #cidx: CubeIdx
-): bool =
-  #if not (left.cidx.isSome() and right.cidx.isSome()):
-  #  return false
-
-  #doAssert(left.cidx.isSome())
-  #doAssert(right.cidx.isSome())
-  #doAssert(left.rcidx.isSome())
-  #doAssert(right.rcidx.isSome())
-  if not (
-    (
-      left.cidx.isSome()
-    ) and (
-      right.cidx.isSome()
-    ) 
-    #and (
-    #  left.rcidx.isSome()
-    #) and (
-    #  right.rcidx.isSome()
-    #)
-  ):
-    return false
-
-  if left.cidx.get() != right.cidx.get():
-    return false
-  else:
-    return fastIsCoplanar(left=left, right=right)
-
-  #case left.rcidx.get():
-  #of rcidxFront:
-  #  return (left.vArr[0].v[1] == right.vArr[0].v[1])
-  #of rcidxLeft:
-  #  # 
-  #  return (left.vArr[0].v[0] == right.vArr[0].v[0])
-  #of rcidxBottom:
-  #  # 
-  #  return (left.vArr[0].v[2] == right.vArr[0].v[2])
-  #else:
-  #  doAssert(false)
+#proc fastIsCoplanar(
+#  left: var CubeUnit,
+#  right: var CubeUnit,
+#): bool =
+#  let myIdx = coplRcidxVidxArr[left.rcidx.get()]
+#  echo "myIdx: " & $myIdx
+#  echo $left.vArr
+#  echo $right.vArr
+#  result = true
+#  for idx in 0 ..< quadVertArrLen:
+#    var cond: bool = true
+#
+#    cond = (left.vArr[idx].v[myIdx] != right.vArr[idx].v[myIdx])
+#    if left.vArr[0].v[myIdx] != left.vArr[idx].v[myIdx]:
+#      cond = false
+#    if right.vArr[0].v[myIdx] != right.vArr[idx].v[myIdx]:
+#      cond = false
+#    if left.vArr[0].v[myIdx] != right.vArr[0].v[myIdx]:
+#      cond = false
+#
+#    #echo (
+#    #  $idx & " " & $cond & ": " & $left.vArr[idx] & " " & $right.vArr[idx]
+#    #)
+#
+#    #if cond:
+#    #  result = false
+#    if not cond:
+#      result = false
+#    
+#  #return (
+#  #  left.vArr[0].v[myIdx] == right.vArr[0].v[myIdx]
+#  #)
+#
+#proc isCoplanarEtc(
+#  left: var CubeUnit,
+#  right: var CubeUnit,
+#  #cidx: CubeIdx
+#): bool =
+#  #if not (left.cidx.isSome() and right.cidx.isSome()):
+#  #  return false
+#
+#  #doAssert(left.cidx.isSome())
+#  #doAssert(right.cidx.isSome())
+#  #doAssert(left.rcidx.isSome())
+#  #doAssert(right.rcidx.isSome())
+#  if not (
+#    #(
+#    #  left.cidx.isSome()
+#    #) and (
+#    #  right.cidx.isSome()
+#    #) 
+#    #and
+#    (
+#      left.rcidx.isSome()
+#    ) and (
+#      right.rcidx.isSome()
+#    )
+#  ):
+#    #echo "returning false!"
+#    #echo $left.rcidx.isSome() & " " & $right.rcidx.isSome()
+#    return false
+#  #echo "maybe not returning false!"
+#
+#  if left.rcidx.get() != right.rcidx.get():
+#    return false
+#  else:
+#    return fastIsCoplanar(left=left, right=right)
+#
+#  #case left.rcidx.get():
+#  #of rcidxFront:
+#  #  return (left.vArr[0].v[1] == right.vArr[0].v[1])
+#  #of rcidxLeft:
+#  #  # 
+#  #  return (left.vArr[0].v[0] == right.vArr[0].v[0])
+#  #of rcidxBottom:
+#  #  # 
+#  #  return (left.vArr[0].v[2] == right.vArr[0].v[2])
+#  #else:
+#  #  doAssert(false)
 
 proc hasSharedVertPair*(
   left: ptr CubeUnit,
@@ -461,26 +527,10 @@ type
 
 
 proc toCubeDataInfoArr(
-  #cube: Cube,
-  #cData: CubeData,
-  #c: Cube,
-  #vArr: array[quadVertArrLen, Triple[int32]]
-  #cidx: CubeIdx,
-  #idx: int,
   cUnitSeq: ptr seq[CubeUnit],
   cData: ptr CubeData,
-  #cUnit: CubeUnit,
 ): array[cidxLim, CubeDataInfo] =
-  #var vSet: HashSet[Triple[int32]]
-  #for v in vArr:
-  #  vSet.incl(v - vArr[0])
-
-
-  #for j in 0 ..< cUnitSeq[].len():
-  #for j in 0 ..< cData.cUnitIdxSeq.len():
-  #  let unit: ptr CubeUnit = addr cUnitSeq[][cData.cUnitIdxSeq[j]]
   var myRciTbl: Table[
-    #ReducedCubeIdx, seq[(uint, bool)]
     ReducedCubeIdx, seq[CubeDataInfo]
   ]
   for unitIdx in cData.cUnitIdxSeq:
@@ -627,25 +677,19 @@ proc toCubeDataInfoArr(
   #  let tempIdx = (x * 2 * 2) + (y * 2) + z
   #result[1] =
 
-#proc findCubeSide(
-#): CubeOrder
-
-#type
-#  CubeFaceKind* = enum
-#    cfkUnknown,
-#    cfkZero,
-#    cfkOne,
-#type
-#  RectData = object
-#    rSeq*: seq[array[quadVertArrLen, Triple[int32]]] # rect `seq`
-#    rIdxTbl*: Table[Triple[int32], seq[uint]] # vert to `rSeq` index
-
 type
+  # `RectCoplMain`:
+  #   a single coplanar region and its rectangles
   RectCoplMain = object
     ## `cDataIdxSet`:
     ##   For the particular coplanar region, this is its set of indices
     ##   into `ObjConvert.cDataOptS2d[^1]` or `ObjConvert.cDataAdjS2d[^1]`
     #cDataIdxSet*: HashSet[uint]
+
+    # `rBoundsRect`:
+    #   The bounding rect of the particular coplanar region.
+    #   In the general case, this won't be filled entirely!
+    rBoundsRect*: array[lidxLim, array[2, int32]]
 
     # `rOutpS2d`:
     # dim 0:
@@ -657,8 +701,6 @@ type
     rOutpS2d*: seq[seq[array[quadVertArrLen, Triple[int32]]]]
 
 type
-  # `RectCopl`:
-  #   a single coplanar region and its rectangles
   RectCopl = object
     # `rCoplMainSeq`:
     #   the collection of contiguous coplanar regions of the particular
@@ -1445,16 +1487,11 @@ proc findAdjCubes(
     result.add toAdd
 
 
-proc dbgAddFace(
+proc addOutpFace(
   self: var ObjConvert,
   cData: ptr CubeData,
-  #cUnit: var CubeUnit,
   foundVTbl: var Table[Triple[int32], uint],
   vArr: var array[quadVertArrLen, Triple[int32]],
-  #quad: var seq[Triple[uint]],
-  #vtIdxArr: array[quadVertArrLen, uint],
-  #fSeq: var seq[Triple[uint]],
-  #idx: int,
   cidx: CubeIdx,
 ) =
   #let cData: ptr CubeData = addr self.cDataOptS2d[^1][idx]
@@ -1475,6 +1512,7 @@ proc dbgAddFace(
       foundVTbl[v] = vSeqIdx
       self.vOutpSeq.add v
     else:
+      # prevent duplicate output vertices
       vSeqIdx = foundVTbl[v]
 
     fTemp.v[uint(fidxV)] = vSeqIdx + 1
@@ -1525,7 +1563,7 @@ proc dbgVerifyHollow(
         let cUnit: ptr CubeUnit = addr self.cUnitSeq[cInfo.unitIdx]
         #let quad = addr self.fSortSeq[cUnit.fIdx]
         #var fSeq: seq[Triple[uint]]
-        self.dbgAddFace(
+        self.addOutpFace(
           cData=cData,
           foundVTbl=foundVTbl,
           vArr=cUnit.vArr,
@@ -1538,40 +1576,8 @@ proc dbgVerifyHollow(
           #],
           cidx=cidx,
         )
-
-        #let vnIdx = toVnIdx(cidx=cidx)
-
-        #for i in 0 ..< quadVertArrLen:
-        #  let v = cUnit.vArr[i]
-        #  var fTemp: Triple[uint]
-        #  var vSeqIdx: uint = 0
-
-        #  vSeqIdx = uint(self.vOutpSeq.len())
-        #  self.vOutpSeq.add v
-        #  fTemp.v[uint(fidxV)] = vSeqIdx + 1
-
-        #  # TODO:
-        #  # The UV coordinates should be the same for each element of
-        #  # `quad` because each quad is a solid color. Maybe this could be
-        #  # changed later if I decide to support "real" textures?
-        #  #for k in 0 ..< quadVertArrLen:
-        #  fTemp.v[uint(fidxVt)] = quad[i].v[uint(fidxVt)]
-        #  #fTemp.v[uint(fidxVn)] = quad[0].v[uint(fidxVn)]
-        #  fTemp.v[uint(fidxVn)] = vnIdx
-        #  fSeq.add fTemp
-        #case cidx:
-        #of cidxBack, cidxRight, cidxBottom:
-        #  self.fOutpSeq.add fSeq
-        #of cidxFront, cidxLeft, cidxTop:
-        #  # Reverse the order of the vertices.
-        #  # I think this is for ensuring correct winding order.
-        #  # Also why can't `for` loops go in reverse order?
-        #  # Maybe they can, and I'm just not aware of how.
-        #  self.fOutpSeq.add fSeq.reversed()
-        #else:
-        #  discard
   #--------
-proc dbgVerifyRectCoplFirst(
+proc dbgVerifyRectCopl(
   self: var ObjConvert
 ) =
   var foundVTbl: Table[Triple[int32], uint]
@@ -1592,13 +1598,10 @@ proc dbgVerifyRectCoplFirst(
       #let cInfo = 
 
       template rCoplMain: untyped = rCopl.rCoplMainSeq[mainIdx]
-      for jdx in 0 ..< rCoplMain.rOutpS2d[0].len():
-        let vArr = addr rCoplMain.rOutpS2d[0][jdx]
-        #let cInfo = addr cData.cInfoArr[cidx]
-        #let cUnit: ptr CubeUnit = addr self.cUnitSeq[cInfo.unitIdx]
-        #echo vArr[]
+      for jdx in 0 ..< rCoplMain.rOutpS2d[^1].len():
+        let vArr = addr rCoplMain.rOutpS2d[^1][jdx]
 
-        self.dbgAddFace(
+        self.addOutpFace(
           cData=cData,
           foundVTbl=foundVTbl,
           vArr=vArr[],
@@ -1660,92 +1663,16 @@ proc cubesOptSecond(
   #prevSeq[].setLen(0)
   #self.cDataOptS2d[^2].setLen(0)
 
-#proc cubeFacesFindAdjCoplanar(
-#  self: var ObjConvert
-#) =
-#  discard
-
-#proc cubeFacesToRects(
-#  self: var ObjConvert
-#) =
-#  #var myVertTbl: Table[Triple[int32], uint]
-#  #var myVertTbl: Table[Triple[int32], uint]
-#  #var rDataArr: array[
-#  #  cidxLim,
-#  #  #Table[Triple[int32], uint],
-#  #  RectData
-#  #]
-#  #let rDataArr = addr self.rDataArr
-#  let adjSeq = addr self.cDataAdjS2d[^1]
-#  for j in 0 ..< self.cDataOptS2d[^1].len():
-#    let cData: ptr CubeData = addr self.cDataOptS2d[^1][j]
-#    #let myAdj = addr
-#    for cidx in CubeIdx(0) ..< cidxLim:
-#      #var rcidx: ReducedCubeIdx
-#      #case cidx:
-#      #of cidxFront, cidxBack:
-#      #  rcidx = rcidxFront
-#      #of cidxLeft, cidxRight:
-#      #  rcidx = rcidxLeft
-#      #of cidxBottom, cidxTop:
-#      #  rcidx = rcidxBottom
-#      #else:
-#      #  doAssert(false)
-#
-#      let vnIdx = toVnIdx(cidx=cidx)
-#
-#      #let rData: ptr RectData = addr self.rDataArr[cidx]
-#
-#      #let oneCubeAdjSeq = addr adjSeq[j][cidx]
-#      #if oneCubeAdjSeq[].len() > 0:
-#      #  discard
-#      #else:
-#      #  #rData.rSeq
-#      #  ##echo $j & ": " & $cidx & " " & $cData.c.c
-#      #  #let cInfo = addr cData.cInfoArr[cidx]
-#      #  #let unit: ptr CubeUnit = addr self.cUnitSeq[cInfo.unitIdx]
-#      #  #let quad = addr self.fSortSeq[unit.fIdx]
-#      #  #var fSeq: seq[Triple[uint]]
-#      #  #var vnIdx: uint = 0
-
 proc rectCoplsFirst(
   self: var ObjConvert
 ) =
   # `adjSeq` is stores the information about adjacent *cubes*.
   let adjSeq = addr self.cDataAdjS2d[^1]
 
-  #proc innerDoIt(
-  #  #myAdjSeq: ptr array[cidxLim, seq[uint]],
-  #  self: var ObjConvert,
-  #  idx: int,
-  #  cidx: CubeIdx,
-  #  cjdx: CubeIdx,
-  #) =
-
-  #proc doInsert(
-  #  self: var ObjConvert,
-  #  someIdx: int,
-  #  cData: var CubeData,
-  #  cInfo: var CubeDataInfo,
-  #  cUnit: var CubeUnit,
-  #  rCopl: var RectCopl,
-  #) =
-  #  template rCoplIdxTbl(): untyped =
-  #    rCopl.rCoplIdxTbl
-  #  if uint(someIdx) notin rCoplIdxTbl:
-  #    discard
-  #  else:
-  #    discard
   proc myFloodFill(
     self: var ObjConvert,
-    #deq: var Deque[uint],
     idx: int,
     cidx: CubeIdx,
-    #quadVt: uint,
-    #jdx: int,
-    #cData: var CubeData,
-    #cInfo: var CubeDataInfo,
-    #cUnit: var CubeUnit,
   ) =
     template rCopl: untyped = self.rCoplArr[cidx]
     template rCoplMainSeq: untyped = rCopl.rCoplMainSeq
@@ -1754,27 +1681,26 @@ proc rectCoplsFirst(
     let cData0: ptr CubeData = addr self.cDataOptS2d[^1][idx]
     let cInfo0 = addr cData0.cInfoArr[cidx]
     let cUnit0 = addr self.cUnitSeq[cInfo0.unitIdx]
+    cUnit0.cidx = cInfo0.cidx
     let quad0 = addr self.fSortSeq[cUnit0.fIdx]
     let quadVt0 = quad0[0].v[uint(fidxVt)]
-    echo "quadVt0: " & $quadVt0
+    #echo "quadVt0: " & $quadVt0
 
     var toAddRcm: RectCoplMain
     var myRcmOutpSeq: seq[array[quadVertArrLen, Triple[int32]]]
 
     var deq: Deque[uint]
-    #var foundSet: HashSet[uint]
     deq.addLast uint(idx)
     while deq.len() > 0:
       let jdx = deq.popFirst()
       if jdx in rCoplIdxTbl:
-        #echo "test: " & $jdx
+        #echo "`jdx` in `rCoplIdxTbl`: " & $jdx
         continue
-
-      #foundSet.incl jdx
 
       let cData1: ptr CubeData = addr self.cDataOptS2d[^1][jdx]
       let cInfo1 = addr cData1.cInfoArr[cidx]
       let cUnit1 = addr self.cUnitSeq[cInfo1.unitIdx]
+      cUnit1.cidx = cInfo1.cidx
       let quad1 = addr self.fSortSeq[cUnit1.fIdx]
       let quadVt1 = quad1[0].v[uint(fidxVt)]
       if quadVt0 == quadVt1:
@@ -1816,27 +1742,49 @@ proc rectCoplsFirst(
         #  if temp notin foundSet:
         #    foundSet.incl temp
         #    deq.addLast myAdjSeq1[zdx]
+        #var myTbl: Table[CubeIdx, bool]
         for ckdx in CubeIdx(0) ..< cidxLim:
-          template myAdjSeq1: untyped = adjSeq[jdx][ckdx]
-          for zdx in 0 ..< myAdjSeq1.len():
+          let myAdjSeq1 = addr adjSeq[jdx][ckdx]
+          for zdx in 0 ..< myAdjSeq1[].len():
             let kdx = myAdjSeq1[zdx]
-            #if kdx notin foundSet:
-            let cData2: ptr CubeData = addr self.cDataOptS2d[^1][kdx]
-            let cInfo2 = addr cData2.cInfoArr[ckdx]
-            let cUnit2 = addr self.cUnitSeq[cInfo2.unitIdx]
-            if (
-              (
-                isCoplanarEtc(
-                  left=cUnit1[],
-                  right=cUnit2[],
-                )
-              ) and (
-                kdx notin rCoplIdxTbl
-                #true
-              )
-            ):
+            let myAdjSeq2 = addr adjSeq[kdx][cidx]
+            if myAdjSeq2[].len() > 0:
+              # check for if this face is entirely obscured
+              discard
+            elif kdx notin rCoplIdxTbl:
               deq.addLast kdx
+        #for ckdx in CubeIdx(0) ..< cidxLim:
+        #  template myAdjSeq1: untyped = adjSeq[jdx][ckdx]
+        #  for zdx in 0 ..< myAdjSeq1.len():
+        #    let kdx = myAdjSeq1[zdx]
+        #    let cData2: ptr CubeData = addr self.cDataOptS2d[^1][kdx]
+        #    let cInfo2 = addr cData2.cInfoArr[ckdx]
+        #    let cUnit2 = addr self.cUnitSeq[cInfo2.unitIdx]
+        #    cUnit2.cidx = cInfo2.cidx
+        #    echo "test ckdx: " & $ckdx & " " & $kdx & " " & $zdx
+        #    echo "cUnit1.vArr: " & $cUnit1[].vArr
+        #    echo "cUnit2.vArr: " & $cUnit2[].vArr
+        #    let tempIsCoplanarEtc = (
+        #      isCoplanarEtc(
+        #        left=cUnit1[],
+        #        right=cUnit2[],
+        #      )
+        #    )
+        #    echo "isCoplanarEtc: " & $tempIsCoplanarEtc
+        #    if (
+        #      (
+        #        tempIsCoplanarEtc
+        #      ) 
+        #      #and (
+        #      #  kdx notin rCoplIdxTbl
+        #      #  #true
+        #      #)
+        #    ):
+        #      echo "deq.addLast: " & $kdx
+        #      #rCoplIdxTbl[kdx] = uint(rCoplMainSeq.len())
+        #      deq.addLast kdx
         #--------
+    myRcmOutpSeq.sort(quadVertCmp)
     toAddRcm.rOutpS2d.add myRcmOutpSeq
     rCoplMainSeq.add toAddRcm
     
@@ -1884,131 +1832,111 @@ proc rectCoplsFirst(
     #echo "testificate:" 
     for cidx in CubeIdx(0) ..< cidxLim:
       if myCidxValidArr[cidx]:
-        echo (
-          $(
-            "now handling this `idx`, `cidx`: " 
-          ) & (
-            $idx & " " & $cidx
-          )
-        )
+        #echo (
+        #  $(
+        #    "now handling this `idx`, `cidx`: " 
+        #  ) & (
+        #    $idx & " " & $cidx
+        #  )
+        #)
         self.myFloodFill(
           idx=idx,
           cidx=cidx,
         )
       #--------
-      #for cjdx in CubeIdx(0) ..< cidxLim:
-      #  discard
-      #let myAdjSeqI = addr adjSeq[idx][cidx]
-      #if myAdjSeqI[].len() > 0:
-      #  discard
-      #else:
-      #  discard
-
-      #if myAdjSeqI[].len() > 0:
-      #  discard
-
-      #if myAdjSeqI[].len() > 0:
-      #  discard
-      #else:
-      #  for cjdx in CubeIdx(0) ..< cidxLim:
-      #    if cjdx == revCubeIdxArr[cidx]:
-      #      # in this case, we know this side should be blocked!
-      #      continue
-      #    #--------
-      #    # `deq`:
-      #    # * stores indices `self.cDataOptS2d[^1]`
-      #    # * used to implement a flood fill
-      #    var deq: Deque[uint]
-      #    deq.addLast
-      #for cjdx in CubeIdx(0) ..< cidxLim:
-      #  discard
-        
-
-  #for cidx in CubeIdx(0) ..< cidxLim:
-  #  # `myTbl`:
-  #  ## maps from the vertex element at the index computed from
-  #  ## `fastIsCoplanar(left=left, right=right)`
-  #  #var myTbl: Table[int32, array[sidxLim, uint]]
-  #  #var myTbl: Table[int32, HashSet[HashSet[uint]]]
-
-  #  #var myTbl: Table[uint, uint]
-  #  #var mySetSeq: seq[HashSet[uint]]
-
-  #  # If there is an adjacent cube, we can check out five of the other
-  #  # sides of this particular cube.
-  #  # If said other side is blocked, we know we can't use it
-  #  #let tempArr = coplFromCidxToCheckAdj(innerCidx=cidx)
-  #  for idx in 0 ..< self.cDataOptS2d[^1].len():
-  #    let cData: ptr CubeData = addr self.cDataOptS2d[^1][idx]
-  #    for cjdx in CubeIdx(0) ..< cidxLim:
-  #      #let adjSeq = addr adjSeq[idx][cjdx]
-  #      template myAdjSeq(): untyped = 
-  #        adjSeq[idx][cjdx]
-
-  #      if (
-  #        (
-  #          # If we have another cube on this side (indicated by `cjdx`),
-  #          # we don't want to do further processing of this specific side
-  #          # of the cube indicated by `idx`. This is for the purposes of
-  #          # hollowing out the voxel model.
-  #          #adjSeq[idx][cjdx].len() > 0
-  #          myAdjSeq.len() > 0
-  #        ) or (
-  #          #not tempArr[cjdx]
-  #          cjdx == revCubeIdxArr[cidx]
-  #        )
-  #      ):
-  #        discard
-  #      else:
-  #        # first time we see that we are not blocked on the `cjdx`
-  #        # side!
-  #        let cInfo0 = addr cData.cInfoArr[cjdx]
-  #        let cUnit0: ptr CubeUnit = addr self.cUnitSeq[cInfo0.unitIdx]
-  #        let vnIdx = toVnIdx(cidx=cjdx)
-
-  #        template rCopl(): untyped =
-  #          self.rCoplArr[cjdx]
-  #        template rCoplIdxTbl(): untyped =
-  #          rCopl.rCoplIdxTbl
-
-  #        #if uint(idx) notin rCoplIdxTbl:
-  #        #  var toAdd: RectCoplMain
-  #        #  toAdd
-  #        #  rCoplIdxTbl
-
-  #    #if adjSeq[].len() > 0:
-  #    #else:
-  #    #  let cInfo0 = addr cData0.cInfoArr[cidx0]
-  #    #  let cUnit0: ptr CubeUnit = addr self.cUnitSeq[cInfo0.unitIdx]
-  #    #  for idx1 in 0 ..< self.cDataOptS2d[^1].len():
-  #    #    if idx0 != idx1:
-  #    #      let cData1: ptr CubeData = addr self.cDataOptS2d[^1][idx1]
-  #    #      let cInfo1 = addr cData1.cInfoArr[cidx0]
-  #    #      let cUnit1: ptr CubeUnit = addr self.cUnitSeq[cInfo1.unitIdx]
-  #    #    #let cInfo1 = addr cD
-  #    #  #let quad0 = addr self.fSortSeq[unit0.fIdx]
-
-  #    #  #var fSeq: seq[Triple[uint]]
-  #    #  #for idx1 in 0 ..< self.cDataOptS2d[^1]
-
-  #for outerCidx in CubeIdx(0) ..< cidxLim:
-  #  #var myTblArr: array[cidxLim, Table[int32, HashSet[uint]]]
-  #  var myTbl: Table[int32, HashSet[uint]]
-  #  for idx in 0 ..< self.cDataOptS2d[^1].len():
-  #    let tempArr = coplFromCidxToCheckAdj(cidx=outerCidx)
-  #    for cidx in CubeIdx(0) ..< cidxLim:
-  #      discard
-
-
-    #var rCopl: RectCopl
-    ##let rCoplSeq: ptr seq[RectCopl] = addr self.rCoplArr[cidx0]
-    #self.rCoplArr[cidx0].add rCopl
-
 
 proc rectCoplsSecond(
   self: var ObjConvert
 ) =
-  discard
+  for cidx in CubeIdx(0) ..< cidxLim:
+    echo "cidx: " & $cidx
+    template rCopl: untyped = self.rCoplArr[cidx]
+    template rCoplMainSeq: untyped = rCopl.rCoplMainSeq
+    template rCoplIdxTbl: untyped = rCopl.rCoplIdxTbl
+
+    #var foundSet: HashSet[uint]
+
+    #for outerIdx, mainIdx in rCoplIdxTbl:
+    #  #--------
+    #  if mainIdx in foundSet:
+    #    continue
+    #  foundSet.incl mainIdx
+    #  #--------
+    #  #--------
+    #  #let cData: ptr CubeData = addr self.cDataOptS2d[^1][outerIdx]
+    #  #let cInfo = addr cData.cInfoArr[cidx]
+    #  #let cUnit = addr self.cUnitSeq[cInfo.unitIdx]
+    #  #let quad = addr self.fSortSeq[cUnit.fIdx]
+    #  #let quadVt = quad[0].v[uint(fidxVt)]
+
+    #let chngVidx = coplCidxVidxArr[cidx]
+
+    let chngArr = addr coplCidxVidxA2d[cidx]
+    #let chngIdx = chngArr
+
+    #let chngIdx = coplCidxVidxA2d[cidx][0]
+
+    for mainIdx in 0 ..< rCoplMainSeq.len():
+      template rCoplMain: untyped = rCoplMainSeq[mainIdx]
+      template rBoundsRect: untyped = rCoplMain.rBoundsRect
+      template myBrMin: untyped = rBoundsRect[lidxMin]
+      template myBrMax: untyped = rBoundsRect[lidxMax]
+
+      #var myS2d: seq[seq[]]
+      #var dimMin: Triple[int32]
+      #var dimMax: Triple[int32]
+      # "Inp" as in the input to the current optimization pass
+      template myInp: untyped = rCoplMain.rOutpS2d[^1]
+
+      for lidx in LimitIdx(0) ..< lidxLim:
+        rBoundsRect[lidx] = [0, 0]
+
+      echo "mainIdx: " & $mainIdx
+      for idx in 0 ..< myInp.len():
+        # find the bounding rectangle
+        let quad = addr myInp[idx]
+        echo quad[]
+        for quadIdx in 0 ..< quad[].len():
+          let v = addr quad[quadIdx].v
+          for chngArrIdx in 0 ..< chngArr[].len():
+            let chngIdx = chngArr[chngArrIdx]
+            if v[chngIdx] < myBrMin[chngArrIdx]:
+              myBrMin[chngArrIdx] = v[chngIdx]
+            if v[chngIdx] > myBrMax[chngArrIdx]:
+              myBrMax[chngArrIdx] = v[chngIdx]
+
+      # "Outp" as in the output to the current optimization pass
+      var myOutp: seq[array[quadVertArrLen, Triple[int32]]]
+      #for idx in 0 ..< myInp.len():
+      #  myOutp[0].add myInp[idx]
+      #myInp.setLen(0)
+
+      #myOutp[0].sort(quadVertCmp)
+      #for idx in 0 ..< myOutp[0].len():
+      #  myOutp[1]
+      #var myMinTbl: Table[Triple[int32], Triple[uint]]
+      #var myMaxTbl: Table[Triple[int32], Triple[uint]]
+      #template MyLimit: untyped = array[lidxLim, Triple[int32]]
+
+      #var myBounds: array[lidxLim, (int32, int32)]
+      var myLimitSeq: seq[array[lidxLim, Triple[int32]]]
+      #var myLimitTbl: array[lidxLim, Triple[Table[int32, uint]]]
+      var myLimitTbl: Table[(int32, int32), uint]
+
+      for idx in 0 ..< myInp.len():
+        #for chngIdx in 0 ..< chngArr[].len():
+        #  for quadIdx in 0 ..< quadVertArrLen:
+        #    discard
+        discard
+
+      for idx in 0 ..< myLimitSeq.len():
+        let myMin = addr myLimitSeq[idx][lidxMin]
+        let myMax = addr myLimitSeq[idx][lidxMax]
+
+      myInp.setLen(0)
+      rCoplMain.rOutpS2d.add myOutp
+
+
 
 proc rectCoplsThird(
   self: var ObjConvert
@@ -2058,7 +1986,7 @@ proc doOpt(
   #self.outp.add "]\n"
 
   #self.dbgVerifyHollow()
-  self.dbgVerifyRectCoplFirst()
+  self.dbgVerifyRectCopl()
 
   for v in self.vOutpSeq:
     self.outp.add "v "

@@ -1,0 +1,1238 @@
+now handling this `idx`, `cidx`: 0 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 0 cidxRight
+quadVt0: 1
+now handling this `idx`, `cidx`: 0 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 2 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 4 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 4 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 6 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 7 cidxRight
+quadVt0: 1
+now handling this `idx`, `cidx`: 14 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 17 cidxRight
+quadVt0: 1
+now handling this `idx`, `cidx`: 25 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 27 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 64 cidxRight
+quadVt0: 1
+now handling this `idx`, `cidx`: 105 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 108 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 111 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 117 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 120 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 122 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 125 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 127 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 133 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 137 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 139 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 143 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 150 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 153 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 155 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 158 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 161 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 198 cidxRight
+quadVt0: 1
+now handling this `idx`, `cidx`: 301 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 304 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 308 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 313 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 315 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 318 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 322 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 329 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 331 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 334 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 338 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 345 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 351 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 372 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 374 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 377 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 377 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 386 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 392 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 392 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 400 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 405 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 406 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 426 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 508 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 511 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 515 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 519 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 522 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 526 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 526 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 531 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 534 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 537 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 541 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 546 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 548 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 548 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 549 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 572 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 572 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 573 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 573 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 576 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 576 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 579 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 580 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 580 cidxRight
+quadVt0: 1
+now handling this `idx`, `cidx`: 597 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 601 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 603 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 603 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 606 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 607 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 609 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 611 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 612 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 614 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 615 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 617 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 618 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 620 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 621 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 623 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 624 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 626 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 626 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 627 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 627 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 629 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 638 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 655 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 655 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 672 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 678 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 747 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 750 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 755 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 758 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 764 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 768 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 771 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 777 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 782 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 786 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 793 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 799 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1002 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1003 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1004 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1005 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1006 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1007 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1008 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1009 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1011 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1012 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1013 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1014 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1015 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1017 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1018 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1020 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1020 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1022 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1024 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1027 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1028 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1029 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1038 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1047 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1053 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1054 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1071 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1072 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1093 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1093 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1094 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1187 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1187 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1188 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1188 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1203 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1203 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1204 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1204 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1226 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1226 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1227 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1227 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1229 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1230 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1230 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1231 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1232 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1232 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1233 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1234 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1234 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1236 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1238 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1240 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1240 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1240 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1241 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1241 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1243 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1245 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1248 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1248 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1251 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1255 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1277 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1279 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1281 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1285 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1285 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1288 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1289 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 1290 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1297 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 1307 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 1317 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 1321 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1375 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1378 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1383 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1389 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1389 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1391 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1393 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1400 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1403 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1411 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1411 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1412 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1413 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1426 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1449 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1455 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1463 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1474 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1571 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1591 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1596 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1612 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1613 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1614 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1615 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1615 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1616 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1618 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1619 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1620 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1620 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1622 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1623 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1623 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1624 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1624 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1625 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1626 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1628 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1629 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1629 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1634 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1646 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1646 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1651 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1651 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1658 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1658 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1668 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1684 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1684 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1685 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1769 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1774 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1776 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1776 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1776 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1777 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1778 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1778 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1785 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1785 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1790 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1792 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1792 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1805 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1805 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1811 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1813 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1813 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1813 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1814 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1815 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1816 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1816 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1817 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1818 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1819 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1819 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1820 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1822 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1832 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1835 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1836 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 1836 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1850 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1860 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 1862 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1865 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1869 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1876 cidxFront
+quadVt0: 3
+now handling this `idx`, `cidx`: 1876 cidxRight
+quadVt0: 3
+now handling this `idx`, `cidx`: 1876 cidxBottom
+quadVt0: 3
+now handling this `idx`, `cidx`: 1877 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1880 cidxBottom
+quadVt0: 3
+now handling this `idx`, `cidx`: 1883 cidxBack
+quadVt0: 3
+now handling this `idx`, `cidx`: 1883 cidxBottom
+quadVt0: 3
+now handling this `idx`, `cidx`: 1912 cidxRight
+quadVt0: 3
+now handling this `idx`, `cidx`: 1912 cidxBottom
+quadVt0: 3
+now handling this `idx`, `cidx`: 1916 cidxRight
+quadVt0: 3
+now handling this `idx`, `cidx`: 1916 cidxBottom
+quadVt0: 3
+now handling this `idx`, `cidx`: 1933 cidxLeft
+quadVt0: 3
+now handling this `idx`, `cidx`: 1934 cidxFront
+quadVt0: 4
+now handling this `idx`, `cidx`: 1934 cidxRight
+quadVt0: 4
+now handling this `idx`, `cidx`: 1938 cidxRight
+quadVt0: 4
+now handling this `idx`, `cidx`: 1952 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1955 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1958 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1961 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1964 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1966 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1967 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1970 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1970 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1976 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1977 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1977 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1978 cidxLeft
+quadVt0: 3
+now handling this `idx`, `cidx`: 1978 cidxBottom
+quadVt0: 3
+now handling this `idx`, `cidx`: 1980 cidxLeft
+quadVt0: 3
+now handling this `idx`, `cidx`: 1980 cidxBottom
+quadVt0: 3
+now handling this `idx`, `cidx`: 1985 cidxLeft
+quadVt0: 3
+now handling this `idx`, `cidx`: 1985 cidxBottom
+quadVt0: 3
+now handling this `idx`, `cidx`: 1986 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 1986 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 1987 cidxLeft
+quadVt0: 4
+now handling this `idx`, `cidx`: 1989 cidxLeft
+quadVt0: 4
+now handling this `idx`, `cidx`: 1993 cidxLeft
+quadVt0: 4
+now handling this `idx`, `cidx`: 1994 cidxBack
+quadVt0: 3
+now handling this `idx`, `cidx`: 1994 cidxLeft
+quadVt0: 3
+now handling this `idx`, `cidx`: 1994 cidxBottom
+quadVt0: 3
+now handling this `idx`, `cidx`: 1999 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 1999 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2001 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2004 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2028 cidxBack
+quadVt0: 3
+now handling this `idx`, `cidx`: 2028 cidxBottom
+quadVt0: 3
+now handling this `idx`, `cidx`: 2033 cidxBack
+quadVt0: 3
+now handling this `idx`, `cidx`: 2033 cidxRight
+quadVt0: 3
+now handling this `idx`, `cidx`: 2033 cidxBottom
+quadVt0: 3
+now handling this `idx`, `cidx`: 2037 cidxBack
+quadVt0: 4
+now handling this `idx`, `cidx`: 2041 cidxBack
+quadVt0: 4
+now handling this `idx`, `cidx`: 2045 cidxLeft
+quadVt0: 3
+now handling this `idx`, `cidx`: 2048 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2051 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2051 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2053 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2055 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2056 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2059 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2060 cidxBack
+quadVt0: 3
+now handling this `idx`, `cidx`: 2060 cidxLeft
+quadVt0: 3
+now handling this `idx`, `cidx`: 2060 cidxBottom
+quadVt0: 3
+now handling this `idx`, `cidx`: 2062 cidxBack
+quadVt0: 4
+now handling this `idx`, `cidx`: 2062 cidxLeft
+quadVt0: 4
+now handling this `idx`, `cidx`: 2063 cidxLeft
+quadVt0: 4
+now handling this `idx`, `cidx`: 2064 cidxFront
+quadVt0: 4
+now handling this `idx`, `cidx`: 2077 cidxLeft
+quadVt0: 4
+now handling this `idx`, `cidx`: 2084 cidxBack
+quadVt0: 4
+now handling this `idx`, `cidx`: 2093 cidxFront
+quadVt0: 3
+now handling this `idx`, `cidx`: 2093 cidxRight
+quadVt0: 3
+now handling this `idx`, `cidx`: 2093 cidxBottom
+quadVt0: 3
+now handling this `idx`, `cidx`: 2093 cidxTop
+quadVt0: 3
+now handling this `idx`, `cidx`: 2096 cidxLeft
+quadVt0: 3
+now handling this `idx`, `cidx`: 2097 cidxRight
+quadVt0: 3
+now handling this `idx`, `cidx`: 2097 cidxBottom
+quadVt0: 3
+now handling this `idx`, `cidx`: 2097 cidxTop
+quadVt0: 3
+now handling this `idx`, `cidx`: 2098 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2098 cidxRight
+quadVt0: 1
+now handling this `idx`, `cidx`: 2102 cidxRight
+quadVt0: 3
+now handling this `idx`, `cidx`: 2102 cidxBottom
+quadVt0: 3
+now handling this `idx`, `cidx`: 2102 cidxTop
+quadVt0: 3
+now handling this `idx`, `cidx`: 2103 cidxRight
+quadVt0: 1
+now handling this `idx`, `cidx`: 2108 cidxBottom
+quadVt0: 3
+now handling this `idx`, `cidx`: 2108 cidxTop
+quadVt0: 3
+now handling this `idx`, `cidx`: 2120 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2127 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2136 cidxLeft
+quadVt0: 4
+now handling this `idx`, `cidx`: 2137 cidxLeft
+quadVt0: 4
+now handling this `idx`, `cidx`: 2140 cidxBack
+quadVt0: 4
+now handling this `idx`, `cidx`: 2140 cidxLeft
+quadVt0: 4
+now handling this `idx`, `cidx`: 2142 cidxLeft
+quadVt0: 3
+now handling this `idx`, `cidx`: 2142 cidxBottom
+quadVt0: 3
+now handling this `idx`, `cidx`: 2142 cidxTop
+quadVt0: 3
+now handling this `idx`, `cidx`: 2143 cidxLeft
+quadVt0: 3
+now handling this `idx`, `cidx`: 2143 cidxBottom
+quadVt0: 3
+now handling this `idx`, `cidx`: 2143 cidxTop
+quadVt0: 3
+now handling this `idx`, `cidx`: 2144 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2145 cidxLeft
+quadVt0: 3
+now handling this `idx`, `cidx`: 2145 cidxBottom
+quadVt0: 3
+now handling this `idx`, `cidx`: 2145 cidxTop
+quadVt0: 3
+now handling this `idx`, `cidx`: 2148 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2149 cidxBack
+quadVt0: 3
+now handling this `idx`, `cidx`: 2149 cidxLeft
+quadVt0: 3
+now handling this `idx`, `cidx`: 2149 cidxBottom
+quadVt0: 3
+now handling this `idx`, `cidx`: 2149 cidxTop
+quadVt0: 3
+now handling this `idx`, `cidx`: 2155 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2155 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2157 cidxBack
+quadVt0: 4
+now handling this `idx`, `cidx`: 2162 cidxLeft
+quadVt0: 4
+now handling this `idx`, `cidx`: 2164 cidxBack
+quadVt0: 3
+now handling this `idx`, `cidx`: 2164 cidxBottom
+quadVt0: 3
+now handling this `idx`, `cidx`: 2164 cidxTop
+quadVt0: 3
+now handling this `idx`, `cidx`: 2165 cidxBack
+quadVt0: 3
+now handling this `idx`, `cidx`: 2165 cidxRight
+quadVt0: 3
+now handling this `idx`, `cidx`: 2165 cidxBottom
+quadVt0: 3
+now handling this `idx`, `cidx`: 2165 cidxTop
+quadVt0: 3
+now handling this `idx`, `cidx`: 2166 cidxBack
+quadVt0: 3
+now handling this `idx`, `cidx`: 2166 cidxRight
+quadVt0: 3
+now handling this `idx`, `cidx`: 2166 cidxBottom
+quadVt0: 3
+now handling this `idx`, `cidx`: 2166 cidxTop
+quadVt0: 3
+now handling this `idx`, `cidx`: 2167 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2173 cidxLeft
+quadVt0: 3
+now handling this `idx`, `cidx`: 2180 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2182 cidxBack
+quadVt0: 3
+now handling this `idx`, `cidx`: 2182 cidxLeft
+quadVt0: 3
+now handling this `idx`, `cidx`: 2182 cidxBottom
+quadVt0: 3
+now handling this `idx`, `cidx`: 2182 cidxTop
+quadVt0: 3
+now handling this `idx`, `cidx`: 2186 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2186 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 2191 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2193 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 2206 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2206 cidxRight
+quadVt0: 1
+now handling this `idx`, `cidx`: 2208 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2208 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 2215 cidxRight
+quadVt0: 1
+now handling this `idx`, `cidx`: 2221 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 2227 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 2237 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2240 cidxFront
+quadVt0: 5
+now handling this `idx`, `cidx`: 2269 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2270 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2301 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2303 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2303 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 2305 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2305 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 2306 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2308 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2308 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2308 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 2309 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2310 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2310 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2311 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2313 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2315 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2317 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2321 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2322 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2323 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2324 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2325 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2327 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2327 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2335 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2339 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2341 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2344 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2346 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2347 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2347 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2351 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2352 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2359 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2360 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2361 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 2363 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 2371 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2373 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 2374 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2375 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2375 cidxRight
+quadVt0: 1
+now handling this `idx`, `cidx`: 2381 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2382 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2382 cidxTop
+quadVt0: 1
+now handling this `idx`, `cidx`: 2389 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2391 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2406 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2421 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2428 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2433 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2435 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2435 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2436 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2436 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2438 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2441 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2443 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2445 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2445 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2446 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2450 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2451 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2455 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2458 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2461 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2462 cidxFront
+quadVt0: 5
+now handling this `idx`, `cidx`: 2463 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2465 cidxFront
+quadVt0: 5
+now handling this `idx`, `cidx`: 2468 cidxRight
+quadVt0: 1
+now handling this `idx`, `cidx`: 2481 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2485 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2486 cidxFront
+quadVt0: 5
+now handling this `idx`, `cidx`: 2488 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2489 cidxFront
+quadVt0: 6
+now handling this `idx`, `cidx`: 2491 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2492 cidxFront
+quadVt0: 6
+now handling this `idx`, `cidx`: 2494 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2494 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2496 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2497 cidxFront
+quadVt0: 5
+now handling this `idx`, `cidx`: 2500 cidxFront
+quadVt0: 5
+now handling this `idx`, `cidx`: 2502 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2505 cidxFront
+quadVt0: 6
+now handling this `idx`, `cidx`: 2508 cidxFront
+quadVt0: 5
+now handling this `idx`, `cidx`: 2510 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2511 cidxFront
+quadVt0: 5
+now handling this `idx`, `cidx`: 2513 cidxFront
+quadVt0: 6
+now handling this `idx`, `cidx`: 2515 cidxFront
+quadVt0: 5
+now handling this `idx`, `cidx`: 2519 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2520 cidxFront
+quadVt0: 5
+now handling this `idx`, `cidx`: 2522 cidxFront
+quadVt0: 5
+now handling this `idx`, `cidx`: 2523 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2524 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2525 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2528 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2529 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2530 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2533 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2534 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2535 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2539 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2539 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2540 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2558 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2569 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2572 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2576 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2646 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2649 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2652 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2655 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2658 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2664 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2665 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2668 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2668 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2671 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2677 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2678 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2681 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2681 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2684 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2688 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2688 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2695 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2696 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2696 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2697 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2700 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2705 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2705 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2710 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2710 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2715 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2722 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2734 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2747 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2766 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2766 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2773 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2775 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2776 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2778 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2781 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2783 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2785 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2788 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2788 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2790 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2792 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2796 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2796 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2796 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2799 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2802 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2802 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2804 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2805 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2812 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2831 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2831 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2835 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2856 cidxFront
+quadVt0: 1
+now handling this `idx`, `cidx`: 2856 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2862 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2870 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2871 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2871 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2874 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2876 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2878 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2880 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2882 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2883 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2884 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2885 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2888 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2889 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2891 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2892 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2893 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2898 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2905 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2910 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2910 cidxBottom
+quadVt0: 1
+now handling this `idx`, `cidx`: 2915 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2919 cidxBack
+quadVt0: 1
+now handling this `idx`, `cidx`: 2919 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2920 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2921 cidxLeft
+quadVt0: 1
+now handling this `idx`, `cidx`: 2922 cidxLeft
+quadVt0: 1
