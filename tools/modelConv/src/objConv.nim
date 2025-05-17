@@ -2469,7 +2469,8 @@ proc rectCoplsSecond(
           #  left != right
           #) and
           (
-            didFinishStrip == 0
+            #didFinishStrip == 0
+            true
           ) and (
             (
               abs(leftTemp - prevLeftTemp) > 1
@@ -2536,23 +2537,34 @@ proc rectCoplsSecond(
             #finishStrip(doPrev=true)
 
         #if didFinishStrip == 0:
-        echo "first:"
-        myDbgPrint()
+        #echo "first:"
+        #myDbgPrint()
         prevLeft = left
         prevRight = right
         prevOuterLeft = outerLeft
         prevOuterRight = outerRight
         prevLeftTemp = leftTemp
         prevRightTemp = rightTemp
+        myDbgPrint()
 
         echo "----"
-        echo "second:"
-        myDbgPrint()
+        #echo "second:"
+        #myDbgPrint()
 
         #if not shouldAdd2:
         #  idx += 1
         #else:
         #  idx += 2 
+        #if didFinishStrip == 2:
+        if (
+          (
+            nextUnconnStrip and not nextVertStrip
+          ) or (
+            #not nextUnconnStrip and nextVertStrip
+            didFinishStrip == 2
+          )
+        ):
+          idx -= 1
         idx += 1
 
         #if idx < myInp.len():
@@ -2568,8 +2580,10 @@ proc rectCoplsSecond(
 
 
       #if didFinishStrip == 0:
-      if true:
-      #if didFinishStrip == 1:
+      #if true:
+      #if didFinishStrip == 2:
+      #if stripIdx == 0:
+      if didFinishStrip == 0:
         #discard
         echo (
           "last finishStrip(): " & $cidx
