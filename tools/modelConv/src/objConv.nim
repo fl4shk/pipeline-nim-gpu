@@ -109,40 +109,6 @@ proc `<`*(
       return false
   return false # they were equal
 
-proc myCmpLt(
-  l: Triple[int32],
-  r: Triple[int32],
-): bool =
-  result = l < r
-  #for i in [0, 2, 1]:
-  #  if l.v[i] < r.v[i]:
-  #    return true
-  #  elif l.v[i] == r.v[i]:
-  #    discard
-  #  else:
-  #    return false
-  #return false # they were equal
-proc myQuadCmp(
-  left: array[quadVertArrLen, Triple[int32]],
-  right: array[quadVertArrLen, Triple[int32]],
-): int =
-  #if left[0] < right[0]:
-  #  return -1
-  #elif left[0] == right[0]:
-  #  return 0
-  #else:
-  #  return 1
-  for i in 0 ..< left.len():
-  #for i in [0, 2, 1]:
-    #if left[i] < right[i]:
-    if myCmpLt(l=left[i], r=right[i]):
-      return -1
-    elif left[i] == right[i]:
-      discard
-    else:
-      return 1
-  return 0 # they were equal
-
 #proc `<`*(
 #  left: array[quadVertArrLen, Triple[int32]],
 #  right: array[quadVertArrLen, Triple[int32]],
@@ -385,6 +351,72 @@ const
     [2, 0, 1], # cidxBottom: z changes if not coplanar
     [2, 0, 1], # cidxTop: z changes if not coplanar
   ]
+  coplCidxVidxA2dB: array[cidxLim, array[3, uint]] = [
+    [0, 1, 2], # cidxFront: y changes if not coplanar
+    [0, 1, 2], # cidxBack: y changes if not coplanar
+    [1, 2, 0], # cidxLeft: x changes if not coplanar
+    [1, 2, 0], # cidxRight: x changes if not coplanar
+    [0, 2, 1], # cidxBottom: z changes if not coplanar
+    [0, 2, 1], # cidxTop: z changes if not coplanar
+  ]
+
+var tempMyQuadCmpCidx: CubeIdx = cidxLim
+proc myCmpLt(
+  l: Triple[int32],
+  r: Triple[int32],
+  #cidx: CubeIdx,
+): bool =
+  #let chngArr = addr coplCidxVidxA2d[tempMyQuadCmpCidx]
+  let chngArr = addr coplCidxVidxA2dB[tempMyQuadCmpCidx]
+  #result = l < r
+  for i in chngArr[]:
+    if l.v[i] < r.v[i]:
+      return true
+    elif l.v[i] == r.v[i]:
+      discard
+    else:
+      return false
+  return false # they were equal
+
+proc myQuadCmp(
+  left: array[quadVertArrLen, Triple[int32]],
+  right: array[quadVertArrLen, Triple[int32]],
+): int =
+  #if left[0] < right[0]:
+  #  return -1
+  #elif left[0] == right[0]:
+  #  return 0
+  #else:
+  #  return 1
+
+  var leftMin = left[0]
+  var rightMin = right[0]
+
+  for i in 1 ..< left.len():
+    for j in 0 ..< left[i].v.len():
+      if leftMin.v[j] > left[i].v[j]:
+        leftMin.v[j] = left[i].v[j]
+      if rightMin.v[j] > right[i].v[j]:
+        rightMin.v[j] = right[i].v[j]
+  if myCmpLt(l=leftMin, r=rightMin):
+    return -1
+  elif leftMin.v == rightMin.v:
+    return 0
+  else:
+    return 1
+
+  #for i in 0 ..< left.len():
+  ##for i in [0, 2, 1]:
+  #  #if left[i] < right[i]:
+  #  if myCmpLt(l=left[i], r=right[i]):
+  #    return -1
+  #  elif left[i] == right[i]:
+  #    discard
+  #  else:
+  #    return 1
+  #return 0 # they were equal
+
+
 
 proc isAdjInPlane(
   left: var array[quadVertArrLen, Triple[int32]],
@@ -1705,7 +1737,7 @@ proc addOutpFace(
     toAdd.add idx
     foundQuadTbl[vSet] = toAdd
   else:
-    #discard
+    discard
     echo vArr
     doAssert(
       false,
@@ -1921,10 +1953,9 @@ proc rectCoplsFirst(
     if (
       (
         uint(idx) in rCoplIdxTbl
+      ) or (
+        not tempSeq[idx][cidx]
       )
-      #or (
-      #  not tempSeq[idx][cidx]
-      #)
     ):
       return
 
@@ -1946,10 +1977,9 @@ proc rectCoplsFirst(
       if (
         (
           jdx in rCoplIdxTbl
+        ) or (
+          not tempSeq[jdx][cidx]
         )
-        #or (
-        #  not tempSeq[jdx][cidx]
-        #)
         #or (
         #  #not tempSeq[jdx][cidx]
         #)
@@ -2068,6 +2098,7 @@ proc rectCoplsFirst(
                 echo "cUnit1.vArr:" & $cUnit1[].vArr
                 echo "cUnit2.vArr:" & $cUnit2[].vArr
         #--------
+    tempMyQuadCmpCidx = cidx
     myRcmOutpSeq.sort(myQuadCmp)
     toAddRcm.rOutpS2d.add myRcmOutpSeq
     rCoplMainSeq.add toAddRcm
@@ -2146,7 +2177,7 @@ proc rectCoplsSecond(
     template rCoplIdxTbl: untyped = rCopl.rCoplIdxTbl
     #template rCoplMainIdxTbl: untyped = rCopl.rCoplMainIdxTbl
 
-    #var foundSet: HashSet[uint]
+    var foundSet: HashSet[uint]
 
     #for outerIdx, mainIdx in rCoplIdxTbl:
     #  #--------
@@ -2168,17 +2199,17 @@ proc rectCoplsSecond(
 
     #let chngIdx = coplCidxVidxA2d[cidx][0]
 
-    for mainIdx in 0 ..< rCoplMainSeq.len():
-    #for outerIdx, mainIdx in rCoplIdxTbl:
+    #for mainIdx in 0 ..< rCoplMainSeq.len():
+    for outerIdx, mainIdx in rCoplIdxTbl:
       template rCoplMain: untyped = rCoplMainSeq[mainIdx]
-      #if mainIdx in foundSet:
-      #  continue
-      #foundSet.incl mainIdx
-      #let cData: ptr CubeData = addr self.cDataOptS2d[^1][outerIdx]
-      #let cInfo = addr cData.cInfoArr[cidx]
-      #let cUnit = addr self.cUnitSeq[cInfo.unitIdx]
-      #let quad = addr self.fSortSeq[cUnit.fIdx]
-      #let quadVt = quad[0].v[uint(fidxVt)]
+      if mainIdx in foundSet:
+        continue
+      foundSet.incl mainIdx
+      let cData: ptr CubeData = addr self.cDataOptS2d[^1][outerIdx]
+      let cInfo = addr cData.cInfoArr[cidx]
+      let cUnit = addr self.cUnitSeq[cInfo.unitIdx]
+      let quad = addr self.fSortSeq[cUnit.fIdx]
+      let quadVt = quad[0].v[uint(fidxVt)]
 
       #template rBoundsRect: untyped = rCoplMain.rBoundsRect
       #template myBrMin: untyped = rBoundsRect[lidxMin]
@@ -2238,8 +2269,12 @@ proc rectCoplsSecond(
       var prevOuterLeft: int32 = 0 # previous outer dimension counter
       var prevOuterRight: int32 = 0 # previous outer dimension counter
 
-      var outerTemp: int32 = 0
-      var prevOuterTemp: int32 = 0
+
+      var leftTemp: int32 = 0
+      var rightTemp: int32 = 0
+
+      var prevLeftTemp: int32 = 0
+      var prevRightTemp: int32 = 0
 
       #echo "cidx, chngArr: " & $cidx & " " & $chngArr[]
       let myDim = myInp[0][0].v[chngArr[2]]
@@ -2249,9 +2284,10 @@ proc rectCoplsSecond(
         let myElem = addr myInp[idx]
         echo "front loop: " & $idx & " " & $myElem[]
 
-      echo "post front loop"
-      var didFirstStrip: bool = false
-      var prevDidFirstStrip: bool = false
+      echo "post front loop: " & $quadVt
+      #var didFirstStrip: bool = false
+      #var prevDidFirstStrip: bool = false
+      var stripIdx: int = 0
 
       proc finishStrip(
         doPrev: bool=false
@@ -2261,7 +2297,7 @@ proc rectCoplsSecond(
         var myRight: int32 = right
         var myOuterLeft: int32 = outerLeft #outerTemp #
         var myOuterRight: int32 = outerRight #outerTemp + 1 #
-        var myDidFirstStrip: bool = didFirstStrip
+        #var myDidFirstStrip: bool = didFirstStrip
         #var myAddend: int32 = 1
 
         #case cidx:
@@ -2281,7 +2317,7 @@ proc rectCoplsSecond(
           myOuterRight = prevOuterRight
           #myOuterLeft = prevOuterTemp
           #myOuterRight = prevOuterTemp + 1
-          myDidFirstStrip = prevDidFirstStrip
+          #myDidFirstStrip = prevDidFirstStrip
 
         #if not myDidFirstStrip:
         #  myOuterRight = myOuterLeft + 1
@@ -2305,11 +2341,20 @@ proc rectCoplsSecond(
         toAdd[3].v[chngArr[0]] = myLeft
         toAdd[3].v[chngArr[1]] = myOuterRight #myOuterLeft + 1 #myAddend
         toAdd[3].v[chngArr[2]] = myDim
-        echo toAdd
+        proc doAdd() =
+          echo "adding this: " & $toAdd
+          myOutp.add toAdd
 
-        myOutp.add toAdd
+        if myOutp.len() > 0:
+          if myOutp[^1] != toAdd:
+            doAdd()
+          else:
+            echo "not adding this: " & $toAdd
+        else:
+          doAdd()
+        stripIdx += 1
 
-        prevDidFirstStrip = didFirstStrip
+        #prevDidFirstStrip = didFirstStrip
 
       var didFinishStrip: int = 0
       echo "chngArr: "  & $chngArr[]
@@ -2328,9 +2373,17 @@ proc rectCoplsSecond(
           ) & (
             " prevOuterLeft:" & $prevOuterLeft
           ) & (
-            " prevOuterRight:" & $prevOuterRight #& ";  "
+            " prevOuterRight:" & $prevOuterRight & ";  "
+          ) & (
+            " leftTemp:" & $leftTemp & " rightTemp:" & $rightTemp & ";  "
+          ) & (
+            " prevLeftTemp:" & $prevLeftTemp
+          ) & (
+            " prevRightTemp:" & $prevRightTemp
           )
         )
+      var nextUnconnStrip: bool = false
+      var nextVertStrip: bool = false
 
       var idx: int = 0
       #for idx in 0 ..< myInp.len():
@@ -2350,6 +2403,15 @@ proc rectCoplsSecond(
         #myElem = addr myInp[idx]
         #setOuterLr()
 
+        outerLeft = myElem[0].v[chngArr[1]]
+        outerRight = myElem[0].v[chngArr[1]]
+        for quadIdx in 0 ..< quadVertArrLen:
+          if outerLeft > myElem[quadIdx].v[chngArr[1]]:
+            outerLeft = myElem[quadIdx].v[chngArr[1]]
+          if outerRight < myElem[quadIdx].v[chngArr[1]]:
+            outerRight = myElem[quadIdx].v[chngArr[1]]
+
+        echo "dbg: myElem: " & $myElem[] & ";  idx:" & $idx
         if idx == 0 or didFinishStrip > 0:
           #if didFinishStrip > 0:
           #  idx -= 1
@@ -2361,15 +2423,9 @@ proc rectCoplsSecond(
           right = myElem[0].v[chngArr[0]]
           #prevOuterLeft = outerLeft
           echo "dbg: after setting left, right: " & $left & " " & $right
-          echo "dbg: myElem: " & $myElem[] & ";  idx:" & $idx
 
-          outerLeft = myElem[0].v[chngArr[1]]
-          outerRight = myElem[0].v[chngArr[1]]
-        for quadIdx in 0 ..< quadVertArrLen:
-          if outerLeft > myElem[quadIdx].v[chngArr[1]]:
-            outerLeft = myElem[quadIdx].v[chngArr[1]]
-          if outerRight < myElem[quadIdx].v[chngArr[1]]:
-            outerRight = myElem[quadIdx].v[chngArr[1]]
+        leftTemp = myElem[0].v[chngArr[0]]
+        rightTemp = myElem[0].v[chngArr[0]]
 
         for quadIdx in 0 ..< quadVertArrLen:
           #case cidx:
@@ -2378,6 +2434,11 @@ proc rectCoplsSecond(
             left = myElem[quadIdx].v[chngArr[0]]
           if right < myElem[quadIdx].v[chngArr[0]]:
             right = myElem[quadIdx].v[chngArr[0]]
+
+          if leftTemp > myElem[quadIdx].v[chngArr[0]]:
+            leftTemp = myElem[quadIdx].v[chngArr[0]]
+          if rightTemp < myElem[quadIdx].v[chngArr[0]]:
+            rightTemp = myElem[quadIdx].v[chngArr[0]]
 
           #  #if outerLeft > myElem[quadIdx].v[chngArr[1]]:
           #  #  outerLeft = myElem[quadIdx].v[chngArr[1]]
@@ -2403,19 +2464,28 @@ proc rectCoplsSecond(
         #  #continue
 
         #var prevMyElem: ptr array[quadVertArrLen, Triple[int32]] = nil
-        let nextUnconnStrip: bool = (
+        nextUnconnStrip = (
           #(
           #  left != right
           #) and
           (
+            didFinishStrip == 0
+          ) and (
             (
-              abs(left - prevLeft) > 1
+              abs(leftTemp - prevLeftTemp) > 1
             ) or (
-              abs(right - prevRight) > 1
+              abs(rightTemp - prevRightTemp) > 1
             )
           )
+          #false
         )
-        let nextVertStrip: bool = abs(outerRight - prevOuterRight) >= 1
+        nextVertStrip = (
+          (
+            abs(outerLeft - prevOuterLeft) >= 1
+          ) or (
+            abs(outerRight - prevOuterRight) >= 1
+          )
+        )
         if idx > 0:
           echo (
             (
@@ -2442,58 +2512,43 @@ proc rectCoplsSecond(
             #else:
             #  didFinishStrip = 0
           else:
-            didFinishStrip = 1
-            #shouldAdd2 = true
-            #shouldAdd2 = false
+            didFinishStrip = 2
+          #if nextUnconnStrip or nextVertStrip:
+          #  didFinishStrip = 1
+          #else:
+          #  didFinishStrip = 0
 
           if didFinishStrip > 0:
             echo (
-              "intermediate finishStrip(): " & $cidx
+              (
+                "intermediate finishStrip(): " & $cidx & ";  "
+              )
+              #& (
+              #  "unconn:" & $nextUnconnStrip & " "
+              #) & (
+              #  "vert:" & $nextVertStrip
+              #)
             )
+            #finishStrip(doPrev=(didFinishStrip == 2))
+            #finishStrip(doPrev=(stripIdx == 0))
             finishStrip(doPrev=true)
-
-        #if (
-        #  (
-        #    idx > 0
-        #  ) and (
-        #    (
-        #      not shouldAdd2
-        #    ) or (
-        #      nextVertStrip
-        #    )
-        #  )
-        #):
-        #  #let prevMyElem = [addr myInp[idx - 1], addr myInp[idx - 2]]
-        #  if (
-        #    (
-        #      nextUnconnStrip
-        #    ) or (
-        #      nextVertStrip
-        #      #abs(outerLeft - prevOuterLeft) == 1
-        #    )
-        #  ):
-        #    didFinishStrip = 1
-        #    echo (
-        #      "intermediate finishStrip(): " & $cidx
-        #    )
-        #    if nextVertStrip:
-        #      shouldAdd2 = false
-        #    #if shouldAdd2:
-        #    finishStrip(doPrev=true)
-        #    #idx -= 1
-        #  else:
-        #    didFinishStrip = 0
-        #else:
-        #  didFinishStrip = 0
+            #finishStrip(doPrev=true)
+            #finishStrip(doPrev=true)
 
         #if didFinishStrip == 0:
+        echo "first:"
+        myDbgPrint()
         prevLeft = left
         prevRight = right
         prevOuterLeft = outerLeft
         prevOuterRight = outerRight
+        prevLeftTemp = leftTemp
+        prevRightTemp = rightTemp
 
-        echo "first:"
+        echo "----"
+        echo "second:"
         myDbgPrint()
+
         #if not shouldAdd2:
         #  idx += 1
         #else:
@@ -2514,221 +2569,13 @@ proc rectCoplsSecond(
 
       #if didFinishStrip == 0:
       if true:
+      #if didFinishStrip == 1:
+        #discard
         echo (
           "last finishStrip(): " & $cidx
         )
+        #finishStrip(doPrev=(stripIdx == 0))
         finishStrip(doPrev=true)
-
-        ##if dimCnt != prevDimCnt:
-        ##--------
-        ##echo (
-        ##  (
-        ##    "before: "
-        ##  ) & (
-        ##    "left:" & $left & " right:" & $right & "; "
-        ##  ) & (
-        ##    "outerLeft:" & $outerLeft & " outerRight:" & $outerRight
-        ##  )
-        ##)
-        #if idx == 0 or didFinishStrip > 0:
-        #  left = myElem[0].v[chngArr[0]]
-        #  right = myElem[0].v[chngArr[0]]
-        #  #prevOuterLeft = outerLeft
-
-        #outerLeft = myElem[0].v[chngArr[1]]
-        #outerRight = myElem[0].v[chngArr[1]]
-
-        #for quadIdx in 0 ..< quadVertArrLen:
-        #  #if quadIdx == 0:
-        #  #  if idx == 0:
-        #  #    left = myElem[quadIdx].v[chngArr[0]]
-        #  #    right = myElem[quadIdx].v[chngArr[0]]
-        #  #  else:
-        #  #    if left > myElem[quadIdx].v[chngArr[0]]:
-        #  #      left = myElem[quadIdx].v[chngArr[0]]
-        #  #    if right < myElem[quadIdx].v[chngArr[0]]:
-        #  #      right = myElem[quadIdx].v[chngArr[0]]
-
-        #  #  #if (
-        #  #  #  (
-        #  #  #    idx == 0
-        #  #  #  ) or (
-        #  #  #  )
-        #  #  #)
-        #  #  #if idx == 0:
-        #  #  outerLeft = myElem[quadIdx].v[chngArr[1]]
-        #  #  outerRight = myElem[quadIdx].v[chngArr[1]]
-        #  #else:
-        #    #echo "quadIdx: " & $quadIdx
-        #  #if uint(cidx) mod 2 == 0:
-
-        #  case cidx:
-        #  of cidxFront, cidxLeft, cidxBottom:
-        #    if left > myElem[quadIdx].v[chngArr[0]]:
-        #      left = myElem[quadIdx].v[chngArr[0]]
-        #    if right < myElem[quadIdx].v[chngArr[0]]:
-        #      right = myElem[quadIdx].v[chngArr[0]]
-
-        #    #if outerLeft > myElem[quadIdx].v[chngArr[1]]:
-        #    #  outerLeft = myElem[quadIdx].v[chngArr[1]]
-        #    #if outerRight < myElem[quadIdx].v[chngArr[1]]:
-        #    #  outerRight = myElem[quadIdx].v[chngArr[1]]
-        #  else:
-        #    if left < myElem[quadIdx].v[chngArr[0]]:
-        #      left = myElem[quadIdx].v[chngArr[0]]
-        #    if right > myElem[quadIdx].v[chngArr[0]]:
-        #      right = myElem[quadIdx].v[chngArr[0]]
-
-        #    #if outerLeft < myElem[quadIdx].v[chngArr[1]]:
-        #    #  outerLeft = myElem[quadIdx].v[chngArr[1]]
-        #    #if outerRight > myElem[quadIdx].v[chngArr[1]]:
-        #    #  outerRight = myElem[quadIdx].v[chngArr[1]]
-        #  if outerLeft > myElem[quadIdx].v[chngArr[1]]:
-        #    outerLeft = myElem[quadIdx].v[chngArr[1]]
-        #  if outerRight < myElem[quadIdx].v[chngArr[1]]:
-        #    outerRight = myElem[quadIdx].v[chngArr[1]]
-
-        ##outerTemp = min(outerLeft, outerRight)
-        ##outerTemp = outerLeft
-
-        #  #if didFinishStrip:
-        #  #if outerLeft > myElem[quadIdx].v[chngArr[1]]:
-        #  #  outerLeft = myElem[quadIdx].v[chngArr[1]]
-        #  #if outerRight < myElem[quadIdx].v[chngArr[1]]:
-        #  #  outerRight = myElem[quadIdx].v[chngArr[1]]
-
-        ##if idx == 0 or didFinishStrip:
-        ##  prevLeft = left
-        ##  prevRight = right
-        ##  prevOuterLeft = outerLeft
-        ##  prevOuterRight = outerRight
-        #    
-
-
-        #echo (
-        #  #(
-        #  #  "after: "
-        #  #) &
-        #  (
-        #    "left:" & $left & " right:" & $right & "; "
-        #  ) & (
-        #    "outerLeft:" & $outerLeft
-        #  ) & (
-        #    " outerRight:" & $outerRight & ";  "
-        #  ) & (
-        #    " prevLeft:" & $prevLeft & " prevRight:" & $prevRight & " "
-        #  ) & (
-        #    " prevOuterLeft:" & $prevOuterLeft
-        #  ) & (
-        #    " prevOuterRight:" & $prevOuterRight #& ";  "
-        #  )
-        #  #& (
-        #  #  " outerTemp:" & $outerTemp
-        #  #) & (
-        #  #  " prevOuterTemp:" & $prevOuterTemp
-        #  #)
-        #)
-        ##echo "main loop: " & $idx & " " & $myElem[]
-        ##echo $left & " " & $right & " " & $outerLeft & " " & $outerRight
-        #  #--------
-        #  #--------
-        #if (
-        #  (
-        #    idx > 0
-        #    #true
-        #  ) and (
-        #    #outerLeft != outerRight
-        #    #prevLeft != prevRight
-        #    #left != right
-        #    true
-        #  ) and (
-        #    #prevOuterLeft != prevOuterRight
-        #    #outerLeft != outerRight
-        #    true
-        #  ) and (
-        #    (
-        #      #(
-        #      #  outerLeft != prevOuterLeft
-        #      #) and (
-        #      #  #(uint(cidx) mod 2) == 1
-        #      #  true
-        #      #)
-        #      #abs(outerLeft - prevOuterLeft) == 1
-        #      #true
-        #      (
-        #        abs(left - prevLeft) > 1
-        #      ) 
-        #      #or (
-        #      #  abs(right - prevRight) > 1
-        #      #)
-        #      #false
-        #    ) or (
-        #      #(
-        #      #  abs(outerLeft - prevOuterLeft) == 1
-        #      #) or 
-        #      (
-        #        abs(outerRight - prevOuterRight) == 1
-        #        #outerRight != prevOuterRight
-        #        #outerTemp != prevOuterTemp
-        #      )
-        #      #and (
-        #      #  #(uint(cidx) mod 2) == 0
-        #      #  #true
-        #      #)
-        #    )
-        #  )
-        #):
-        #  echo (
-        #    "intermediate finishStrip(): " & $cidx
-        #  )
-        #  #if abs(left - prevLeft) > 1:
-        #  if abs(outerRight - prevOuterRight) != 0:
-        #    didFinishStrip = 1
-        #    #finishStrip(doPrev=true)
-        #  else:
-        #    didFinishStrip = 2
-        #    #finishStrip(doPrev=false)
-
-        #  finishStrip(doPrev=true)
-        #  didFirstStrip = true
-        #else:
-        #  didFinishStrip = 0
-        #prevLeft = left
-        #prevRight = right
-        #prevOuterLeft = outerLeft
-        #prevOuterRight = outerRight
-        #prevOuterTemp = outerTemp
-
-        ##if didFinishStrip:
-        ##  if idx + 1 < myInp.len() - 1:
-        ##    left = myInp[idx + 1][0].v[chngArr[0]]
-        ##    right = myInp[idx + 1][0].v[chngArr[0]]
-        ##    outerLeft = myInp[idx + 1][0].v[chngArr[1]]
-        ##    outerRight = myInp[idx + 1][0].v[chngArr[1]]
-        ##    prevLeft = left
-        ##    prevRight = right
-        ##    prevOuterLeft = outerLeft
-        ##    prevOuterRight = outerRight
-
-      ##if not didFinishStrip:
-      ##if not prevDidFirstStrip:
-      #if didFinishStrip == 0:
-      #  echo (
-      #    "last finishStrip(): " & $cidx
-      #  )
-      #  #if didFinishStrip != 2:
-      #  #  finishStrip(doPrev=false)
-      #  #else:
-      #  finishStrip(doPrev=true)
-      #if not didFinishStrip and outerRight == prevOuterRight:
-      #  echo (
-      #    "last finishStrip(): " & $cidx
-      #  )
-      #  finishStrip(doPrev=true)
-
-      #for idx in 0 ..< myLimitSeq.len():
-      #  let myMin = addr myLimitSeq[idx][lidxMin]
-      #  let myMax = addr myLimitSeq[idx][lidxMax]
 
       myInp.setLen(0)
       echo "dbg myOutp: begin"
