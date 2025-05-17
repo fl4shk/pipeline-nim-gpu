@@ -361,13 +361,15 @@ const
   ]
 
 var tempMyQuadCmpCidx: CubeIdx = cidxLim
+var tempMyQuadCmpInv: bool = false
 proc myCmpLt(
   l: Triple[int32],
   r: Triple[int32],
   #cidx: CubeIdx,
 ): bool =
-  #let chngArr = addr coplCidxVidxA2d[tempMyQuadCmpCidx]
-  let chngArr = addr coplCidxVidxA2dB[tempMyQuadCmpCidx]
+  var chngArr = addr coplCidxVidxA2dB[tempMyQuadCmpCidx]
+  if tempMyQuadCmpInv:
+    chngArr = addr coplCidxVidxA2d[tempMyQuadCmpCidx]
   #result = l < r
   for i in chngArr[]:
     if l.v[i] < r.v[i]:
@@ -2169,7 +2171,8 @@ proc rectCoplsFirst(
       #--------
 
 proc rectCoplsSecond(
-  self: var ObjConvert
+  self: var ObjConvert,
+  swapChngArrIdx: bool,
 ) =
   for cidx in CubeIdx(0) ..< cidxLim:
     #echo "cidx: " & $cidx
@@ -2196,6 +2199,10 @@ proc rectCoplsSecond(
     #let chngVidx = coplCidxVidxArr[cidx]
 
     let chngArr = addr coplCidxVidxA2d[cidx]
+    var chng0 = chngArr[0]
+    var chng1 = chngArr[1]
+    if swapChngArrIdx:
+      swap(chng0, chng1)
     #let chngIdx = chngArr
 
     #let chngIdx = coplCidxVidxA2d[cidx][0]
@@ -2206,11 +2213,11 @@ proc rectCoplsSecond(
       if mainIdx in foundSet:
         continue
       foundSet.incl mainIdx
-      let cData: ptr CubeData = addr self.cDataOptS2d[^1][outerIdx]
-      let cInfo = addr cData.cInfoArr[cidx]
-      let cUnit = addr self.cUnitSeq[cInfo.unitIdx]
-      let quad = addr self.fSortSeq[cUnit.fIdx]
-      let quadVt = quad[0].v[uint(fidxVt)]
+      #let cData: ptr CubeData = addr self.cDataOptS2d[^1][outerIdx]
+      #let cInfo = addr cData.cInfoArr[cidx]
+      #let cUnit = addr self.cUnitSeq[cInfo.unitIdx]
+      #let quad = addr self.fSortSeq[cUnit.fIdx]
+      #let quadVt = quad[0].v[uint(fidxVt)]
 
       #template rBoundsRect: untyped = rCoplMain.rBoundsRect
       #template myBrMin: untyped = rBoundsRect[lidxMin]
@@ -2288,7 +2295,7 @@ proc rectCoplsSecond(
       #echo "post front loop: " & $quadVt
       #var didFirstStrip: bool = false
       #var prevDidFirstStrip: bool = false
-      var stripIdx: int = 0
+      #var stripIdx: int = 0
 
       proc finishStrip(
         doPrev: bool=false
@@ -2327,20 +2334,20 @@ proc rectCoplsSecond(
         #  myOuterLeft = myOuterRight + 1
         #myOuterRight = myOuterLeft + 1
 
-        toAdd[0].v[chngArr[0]] = myLeft
-        toAdd[0].v[chngArr[1]] = myOuterLeft
+        toAdd[0].v[chng0] = myLeft
+        toAdd[0].v[chng1] = myOuterLeft
         toAdd[0].v[chngArr[2]] = myDim
 
-        toAdd[1].v[chngArr[0]] = myRight #+ 1
-        toAdd[1].v[chngArr[1]] = myOuterLeft
+        toAdd[1].v[chng0] = myRight #+ 1
+        toAdd[1].v[chng1] = myOuterLeft
         toAdd[1].v[chngArr[2]] = myDim
 
-        toAdd[2].v[chngArr[0]] = myRight #+ 1
-        toAdd[2].v[chngArr[1]] = myOuterRight #myOuterLeft + 1 #myAddend
+        toAdd[2].v[chng0] = myRight #+ 1
+        toAdd[2].v[chng1] = myOuterRight #myOuterLeft + 1 #myAddend
         toAdd[2].v[chngArr[2]] = myDim
 
-        toAdd[3].v[chngArr[0]] = myLeft
-        toAdd[3].v[chngArr[1]] = myOuterRight #myOuterLeft + 1 #myAddend
+        toAdd[3].v[chng0] = myLeft
+        toAdd[3].v[chng1] = myOuterRight #myOuterLeft + 1 #myAddend
         toAdd[3].v[chngArr[2]] = myDim
         proc doAdd() =
           #echo "adding this: " & $toAdd
@@ -2354,7 +2361,7 @@ proc rectCoplsSecond(
         #else:
         #  doAdd()
         doAdd()
-        stripIdx += 1
+        #stripIdx += 1
 
         #prevDidFirstStrip = didFirstStrip
 
@@ -2405,34 +2412,34 @@ proc rectCoplsSecond(
         #myElem = addr myInp[idx]
         #setOuterLr()
 
-        outerLeft = myElem[0].v[chngArr[1]]
-        outerRight = myElem[0].v[chngArr[1]]
+        outerLeft = myElem[0].v[chng1]
+        outerRight = myElem[0].v[chng1]
         for quadIdx in 0 ..< quadVertArrLen:
-          if outerLeft > myElem[quadIdx].v[chngArr[1]]:
-            outerLeft = myElem[quadIdx].v[chngArr[1]]
-          if outerRight < myElem[quadIdx].v[chngArr[1]]:
-            outerRight = myElem[quadIdx].v[chngArr[1]]
+          if outerLeft > myElem[quadIdx].v[chng1]:
+            outerLeft = myElem[quadIdx].v[chng1]
+          if outerRight < myElem[quadIdx].v[chng1]:
+            outerRight = myElem[quadIdx].v[chng1]
 
         #echo "dbg: myElem: " & $myElem[] & ";  idx:" & $idx
         if idx == 0 or didFinishStrip > 0:
           #echo "dbg: before setting left, right: " & $left & " " & $right
-          left = myElem[0].v[chngArr[0]]
-          right = myElem[0].v[chngArr[0]]
+          left = myElem[0].v[chng0]
+          right = myElem[0].v[chng0]
           #echo "dbg: after setting left, right: " & $left & " " & $right
 
-        leftTemp = myElem[0].v[chngArr[0]]
-        rightTemp = myElem[0].v[chngArr[0]]
+        leftTemp = myElem[0].v[chng0]
+        rightTemp = myElem[0].v[chng0]
 
         for quadIdx in 0 ..< quadVertArrLen:
-          if left > myElem[quadIdx].v[chngArr[0]]:
-            left = myElem[quadIdx].v[chngArr[0]]
-          if right < myElem[quadIdx].v[chngArr[0]]:
-            right = myElem[quadIdx].v[chngArr[0]]
+          if left > myElem[quadIdx].v[chng0]:
+            left = myElem[quadIdx].v[chng0]
+          if right < myElem[quadIdx].v[chng0]:
+            right = myElem[quadIdx].v[chng0]
 
-          if leftTemp > myElem[quadIdx].v[chngArr[0]]:
-            leftTemp = myElem[quadIdx].v[chngArr[0]]
-          if rightTemp < myElem[quadIdx].v[chngArr[0]]:
-            rightTemp = myElem[quadIdx].v[chngArr[0]]
+          if leftTemp > myElem[quadIdx].v[chng0]:
+            leftTemp = myElem[quadIdx].v[chng0]
+          if rightTemp < myElem[quadIdx].v[chng0]:
+            rightTemp = myElem[quadIdx].v[chng0]
 
         nextUnconnStrip = (
           (
@@ -2506,7 +2513,6 @@ proc rectCoplsSecond(
         #)
         finishStrip(doPrev=true)
 
-      myInp.setLen(0)
       #echo "dbg myOutp: begin"
       #for i in 0 ..< myOutp.len():
       #  var myFound: bool = false
@@ -2516,14 +2522,56 @@ proc rectCoplsSecond(
       #  if myFound:
       #    echo "dbg test: " & $i & ": " & $myOutp[i]
       #echo "dbg myOutp: end"
+      if not swapChngArrIdx:
+        tempMyQuadCmpCidx = cidx
+        tempMyQuadCmpInv = true
+        myOutp.sort(myQuadCmp)
+      myInp.setLen(0)
       rCoplMain.rOutpS2d.add myOutp
 
 
 
-proc rectCoplsThird(
-  self: var ObjConvert
-) =
-  discard
+#proc rectCoplsThird(
+#  self: var ObjConvert
+#) =
+#  for cidx in CubeIdx(0) ..< cidxLim:
+#    #echo "cidx: " & $cidx
+#    template rCopl: untyped = self.rCoplArr[cidx]
+#    template rCoplMainSeq: untyped = rCopl.rCoplMainSeq
+#    template rCoplIdxTbl: untyped = rCopl.rCoplIdxTbl
+#    var foundSet: HashSet[uint]
+#    let chngArr = addr coplCidxVidxA2d[cidx]
+#
+#    for outerIdx, mainIdx in rCoplIdxTbl:
+#      template rCoplMain: untyped = rCoplMainSeq[mainIdx]
+#      if mainIdx in foundSet:
+#        continue
+#      foundSet.incl mainIdx
+#      let cData: ptr CubeData = addr self.cDataOptS2d[^1][outerIdx]
+#      let cInfo = addr cData.cInfoArr[cidx]
+#      let cUnit = addr self.cUnitSeq[cInfo.unitIdx]
+#      let quad = addr self.fSortSeq[cUnit.fIdx]
+#      let quadVt = quad[0].v[uint(fidxVt)]
+#
+#      let myInp = addr rCoplMain.rOutpS2d[^1]
+#      var myOutp: seq[array[quadVertArrLen, Triple[int32]]]
+#      echo "cidx, myInp.len(): " & $cidx & " " & $myInp[].len()
+#      for idx in 0 ..< myInp[].len():
+#        let myElem = addr myInp[idx]
+#        echo "front loop: " & $idx & " " & $myElem[]
+#      echo "post front loop: " & $quadVt
+#
+#      #echo "dbg myOutp: begin"
+#      #for i in 0 ..< myOutp.len():
+#      #  var myFound: bool = false
+#      #  for j in 0 ..< myOutp[i].len():
+#      #    if myOutp[i][j].v[1] == 32:
+#      #      myFound = true
+#      #  if myFound:
+#      #    echo "dbg test: " & $i & ": " & $myOutp[i]
+#      #echo "dbg myOutp: end"
+#      myInp[].setLen(0)
+#      rCoplMain.rOutpS2d.add myOutp
 
 #proc rectsSlice1d(
 #  self: var ObjConvert
@@ -2558,8 +2606,9 @@ proc doOpt(
   #self.rectsSlice1d()
   #self.rectsSlice2d()
   self.rectCoplsFirst()
-  self.rectCoplsSecond()
-  self.rectCoplsThird()
+  self.rectCoplsSecond(false)
+  self.rectCoplsSecond(true)
+  #self.rectCoplsThird()
   self.rectCoplsToTris()
   #self.outp.add "let v = [\n"
   #for v in self.vInpSeq:
