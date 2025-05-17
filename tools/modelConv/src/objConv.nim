@@ -1830,7 +1830,7 @@ proc dbgVerifyRectCopl(
   var foundVTbl: Table[Triple[int32], uint]
   var foundQuadTbl: Table[HashSet[Triple[int32]], seq[uint]]
   for cidx in CubeIdx(0) ..< cidxLim:
-    echo "dbgVerifyRectCopl: " & $cidx
+    #echo "dbgVerifyRectCopl: " & $cidx
     template rCopl: untyped = self.rCoplArr[cidx]
     template rCoplIdxTbl: untyped = rCopl.rCoplIdxTbl
     #for idx in 0 ..< self.cDataOptS2d[^1].len():
@@ -1877,7 +1877,7 @@ proc dbgVerifyRectCopl(
           idx=uint(idx),
           cidx=cidx,
         )
-    echo "dbgVerifyRectCopl: " & $myCnt
+    #echo "dbgVerifyRectCopl: " & $myCnt
 
 proc cubesOptSecond(
   self: var ObjConvert
@@ -1901,7 +1901,8 @@ proc cubesOptSecond(
       mySetTbl[tempSet] = uint(j)
       currSeq.add cData[]
     else:
-      echo "dbg test: " & $j & ": " & $cData.c.c
+      #echo "dbg test: " & $j & ": " & $cData.c.c
+      discard
   #self.cDataOptS2d[^2].setLen(0)
   prevSeq[].setLen(0)
   self.cDataOptS2d.add currSeq
@@ -2279,12 +2280,12 @@ proc rectCoplsSecond(
       #echo "cidx, chngArr: " & $cidx & " " & $chngArr[]
       let myDim = myInp[0][0].v[chngArr[2]]
 
-      echo "cidx, myInp.len(): " & $cidx & " " & $myInp.len()
-      for idx in 0 ..< myInp.len():
-        let myElem = addr myInp[idx]
-        echo "front loop: " & $idx & " " & $myElem[]
+      #echo "cidx, myInp.len(): " & $cidx & " " & $myInp.len()
+      #for idx in 0 ..< myInp.len():
+      #  let myElem = addr myInp[idx]
+      #  echo "front loop: " & $idx & " " & $myElem[]
 
-      echo "post front loop: " & $quadVt
+      #echo "post front loop: " & $quadVt
       #var didFirstStrip: bool = false
       #var prevDidFirstStrip: bool = false
       var stripIdx: int = 0
@@ -2342,46 +2343,47 @@ proc rectCoplsSecond(
         toAdd[3].v[chngArr[1]] = myOuterRight #myOuterLeft + 1 #myAddend
         toAdd[3].v[chngArr[2]] = myDim
         proc doAdd() =
-          echo "adding this: " & $toAdd
+          #echo "adding this: " & $toAdd
           myOutp.add toAdd
 
-        if myOutp.len() > 0:
-          if myOutp[^1] != toAdd:
-            doAdd()
-          else:
-            echo "not adding this: " & $toAdd
-        else:
-          doAdd()
+        #if myOutp.len() > 0:
+        #  if myOutp[^1] != toAdd:
+        #    doAdd()
+        #  else:
+        #    #echo "not adding this: " & $toAdd
+        #else:
+        #  doAdd()
+        doAdd()
         stripIdx += 1
 
         #prevDidFirstStrip = didFirstStrip
 
       var didFinishStrip: int = 0
-      echo "chngArr: "  & $chngArr[]
-      echo "myDim: " & $myDim
+      #echo "chngArr: "  & $chngArr[]
+      #echo "myDim: " & $myDim
 
-      proc myDbgPrint() =
-        echo (
-          (
-            "left:" & $left & " right:" & $right & "; "
-          ) & (
-            "outerLeft:" & $outerLeft
-          ) & (
-            " outerRight:" & $outerRight & ";  "
-          ) & (
-            " prevLeft:" & $prevLeft & " prevRight:" & $prevRight & " "
-          ) & (
-            " prevOuterLeft:" & $prevOuterLeft
-          ) & (
-            " prevOuterRight:" & $prevOuterRight & ";  "
-          ) & (
-            " leftTemp:" & $leftTemp & " rightTemp:" & $rightTemp & ";  "
-          ) & (
-            " prevLeftTemp:" & $prevLeftTemp
-          ) & (
-            " prevRightTemp:" & $prevRightTemp
-          )
-        )
+      #proc myDbgPrint() =
+      #  echo (
+      #    (
+      #      "left:" & $left & " right:" & $right & "; "
+      #    ) & (
+      #      "outerLeft:" & $outerLeft
+      #    ) & (
+      #      " outerRight:" & $outerRight & ";  "
+      #    ) & (
+      #      " prevLeft:" & $prevLeft & " prevRight:" & $prevRight & " "
+      #    ) & (
+      #      " prevOuterLeft:" & $prevOuterLeft
+      #    ) & (
+      #      " prevOuterRight:" & $prevOuterRight & ";  "
+      #    ) & (
+      #      " leftTemp:" & $leftTemp & " rightTemp:" & $rightTemp & ";  "
+      #    ) & (
+      #      " prevLeftTemp:" & $prevLeftTemp
+      #    ) & (
+      #      " prevRightTemp:" & $prevRightTemp
+      #    )
+      #  )
       var nextUnconnStrip: bool = false
       var nextVertStrip: bool = false
 
@@ -2411,25 +2413,17 @@ proc rectCoplsSecond(
           if outerRight < myElem[quadIdx].v[chngArr[1]]:
             outerRight = myElem[quadIdx].v[chngArr[1]]
 
-        echo "dbg: myElem: " & $myElem[] & ";  idx:" & $idx
+        #echo "dbg: myElem: " & $myElem[] & ";  idx:" & $idx
         if idx == 0 or didFinishStrip > 0:
-          #if didFinishStrip > 0:
-          #  idx -= 1
-          #  myElem = addr myInp[idx]
-          #  #idx += 1
-          #  shouldAdd2 = true
-          echo "dbg: before setting left, right: " & $left & " " & $right
+          #echo "dbg: before setting left, right: " & $left & " " & $right
           left = myElem[0].v[chngArr[0]]
           right = myElem[0].v[chngArr[0]]
-          #prevOuterLeft = outerLeft
-          echo "dbg: after setting left, right: " & $left & " " & $right
+          #echo "dbg: after setting left, right: " & $left & " " & $right
 
         leftTemp = myElem[0].v[chngArr[0]]
         rightTemp = myElem[0].v[chngArr[0]]
 
         for quadIdx in 0 ..< quadVertArrLen:
-          #case cidx:
-          #of cidxFront, cidxLeft, cidxBottom:
           if left > myElem[quadIdx].v[chngArr[0]]:
             left = myElem[quadIdx].v[chngArr[0]]
           if right < myElem[quadIdx].v[chngArr[0]]:
@@ -2440,45 +2434,12 @@ proc rectCoplsSecond(
           if rightTemp < myElem[quadIdx].v[chngArr[0]]:
             rightTemp = myElem[quadIdx].v[chngArr[0]]
 
-          #  #if outerLeft > myElem[quadIdx].v[chngArr[1]]:
-          #  #  outerLeft = myElem[quadIdx].v[chngArr[1]]
-          #  #if outerRight < myElem[quadIdx].v[chngArr[1]]:
-          #  #  outerRight = myElem[quadIdx].v[chngArr[1]]
-          #else:
-          #  if left < myElem[quadIdx].v[chngArr[0]]:
-          #    left = myElem[quadIdx].v[chngArr[0]]
-          #  if right > myElem[quadIdx].v[chngArr[0]]:
-          #    right = myElem[quadIdx].v[chngArr[0]]
-
-          #  #if outerLeft < myElem[quadIdx].v[chngArr[1]]:
-          #  #  outerLeft = myElem[quadIdx].v[chngArr[1]]
-          #  #if outerRight > myElem[quadIdx].v[chngArr[1]]:
-          #  #  outerRight = myElem[quadIdx].v[chngArr[1]]
-          #if outerLeft > myElem[quadIdx].v[chngArr[1]]:
-          #  outerLeft = myElem[quadIdx].v[chngArr[1]]
-          #if outerRight < myElem[quadIdx].v[chngArr[1]]:
-          #  outerRight = myElem[quadIdx].v[chngArr[1]]
-
-        #if shouldAdd2:
-        #  idx += 2
-        #  #continue
-
-        #var prevMyElem: ptr array[quadVertArrLen, Triple[int32]] = nil
         nextUnconnStrip = (
-          #(
-          #  left != right
-          #) and
           (
-            #didFinishStrip == 0
-            true
-          ) and (
-            (
-              abs(leftTemp - prevLeftTemp) > 1
-            ) or (
-              abs(rightTemp - prevRightTemp) > 1
-            )
+            abs(leftTemp - prevLeftTemp) > 1
+          ) or (
+            abs(rightTemp - prevRightTemp) > 1
           )
-          #false
         )
         nextVertStrip = (
           (
@@ -2488,30 +2449,18 @@ proc rectCoplsSecond(
           )
         )
         if idx > 0:
-          echo (
-            (
-              "unconn, vert: " 
-            ) & (
-              $nextUnconnStrip & " " & $nextVertStrip & ";  idx:" & $idx
-            )
-          )
-          #prevMyElem = addr myInp[idx - 1]
-          #nextUnconnStrip = (
-          #  not isAdjInPlane(
-          #    left=myElem[],
-          #    right=prevMyElem[],
-          #    #left=prevMyElem[0][],
-          #    #right=prevMyElem[1][],
+          #echo (
+          #  (
+          #    "unconn, vert: " 
+          #  ) & (
+          #    $nextUnconnStrip & " " & $nextVertStrip & ";  idx:" & $idx
           #  )
           #)
           if not nextVertStrip:
-            #if not shouldAdd2:
             if nextUnconnStrip:
               didFinishStrip = 1
             else:
               didFinishStrip = 0
-            #else:
-            #  didFinishStrip = 0
           else:
             didFinishStrip = 2
           #if nextUnconnStrip or nextVertStrip:
@@ -2520,16 +2469,11 @@ proc rectCoplsSecond(
           #  didFinishStrip = 0
 
           if didFinishStrip > 0:
-            echo (
-              (
-                "intermediate finishStrip(): " & $cidx & ";  "
-              )
-              #& (
-              #  "unconn:" & $nextUnconnStrip & " "
-              #) & (
-              #  "vert:" & $nextVertStrip
-              #)
-            )
+            #echo (
+            #  (
+            #    "intermediate finishStrip(): " & $cidx & ";  "
+            #  )
+            #)
             #finishStrip(doPrev=(didFinishStrip == 2))
             #finishStrip(doPrev=(stripIdx == 0))
             finishStrip(doPrev=true)
@@ -2545,62 +2489,33 @@ proc rectCoplsSecond(
         prevOuterRight = outerRight
         prevLeftTemp = leftTemp
         prevRightTemp = rightTemp
-        myDbgPrint()
-
-        echo "----"
-        #echo "second:"
         #myDbgPrint()
 
-        #if not shouldAdd2:
-        #  idx += 1
-        #else:
-        #  idx += 2 
-        #if didFinishStrip == 2:
-        if (
-          (
-            nextUnconnStrip and not nextVertStrip
-          ) or (
-            #not nextUnconnStrip and nextVertStrip
-            didFinishStrip == 2
-          )
-        ):
-          idx -= 1
-        idx += 1
+        #echo "----"
+        #if didFinishStrip > 0:
+        #  idx -= 1
+        if didFinishStrip == 0:
+          idx += 1
 
-        #if idx < myInp.len():
-        #  myElem = addr myInp[idx]
-        #  setOuterLr()
-        #  echo ""
-        #  echo "second:"
-        #  myDbgPrint()
-        #  echo "----"
-        if didFinishStrip > 0:
-          echo "---- ----"
+        #if didFinishStrip > 0:
+        #  echo "---- ----"
 
-
-
-      #if didFinishStrip == 0:
-      #if true:
-      #if didFinishStrip == 2:
-      #if stripIdx == 0:
       if didFinishStrip == 0:
-        #discard
-        echo (
-          "last finishStrip(): " & $cidx
-        )
-        #finishStrip(doPrev=(stripIdx == 0))
+        #echo (
+        #  "last finishStrip(): " & $cidx
+        #)
         finishStrip(doPrev=true)
 
       myInp.setLen(0)
-      echo "dbg myOutp: begin"
-      for i in 0 ..< myOutp.len():
-        var myFound: bool = false
-        for j in 0 ..< myOutp[i].len():
-          if myOutp[i][j].v[1] == 32:
-            myFound = true
-        if myFound:
-          echo "dbg test: " & $i & ": " & $myOutp[i]
-      echo "dbg myOutp: end"
+      #echo "dbg myOutp: begin"
+      #for i in 0 ..< myOutp.len():
+      #  var myFound: bool = false
+      #  for j in 0 ..< myOutp[i].len():
+      #    if myOutp[i][j].v[1] == 32:
+      #      myFound = true
+      #  if myFound:
+      #    echo "dbg test: " & $i & ": " & $myOutp[i]
+      #echo "dbg myOutp: end"
       rCoplMain.rOutpS2d.add myOutp
 
 
